@@ -1,0 +1,40 @@
+.container {
+    margin: 1rem;
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    border: rgb(72, 101, 129) solid 0px;
+    border-radius: 6px;
+    color: rgb(72, 101, 129);
+}
+
+h3 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#status {
+    min-height: 1rem;
+    text-align: center;
+    margin-top: 0.25rem;
+}
+
+#library-name {
+    width: 200px;
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    border: 1px solid rgb(159, 179, 200);
+    border-radius: 4px;
+    color: rgb(16, 42, 67);
+    line-height: 20px;
+    padding: 6px;
+}
+
+#save {
+    display: block;
+    margin: 1rem auto 0 auto;
+    background-color: rgb(217, 226, 236);
+    color: rgb(51, 78, 104);
+    padding: 8px 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
