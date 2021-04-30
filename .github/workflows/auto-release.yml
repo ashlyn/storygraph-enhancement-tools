@@ -1,4 +1,4 @@
-name: Version automation
+name: Auto-release version
 
 on:
   push:

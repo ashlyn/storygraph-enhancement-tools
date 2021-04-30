@@ -1,4 +1,4 @@
-name: Version automation
+name: Validate version
 
 on:
     pull_request:
