@@ -6,9 +6,9 @@ on:
       - main
     paths:
       - 'docs/CHANGELOG.md'
-        - 'manifest.json'
-        - 'options/**'
-        - 'book-view-links.js'
+      - 'manifest.json'
+      - 'options/**'
+      - 'book-view-links.js'
 
 jobs:
   build:
