@@ -24,6 +24,17 @@ jobs:
         with:
           path: ./docs/CHANGELOG.md
 
+      - name: Get version from manifest.json
+        id: manifest-version
+        uses: ashley-taylor/read-json-property-action@v1.0
+        with:
+          path: manifest.json
+          property: version
+
+      - name: Validate manifest.json and CHANGELOG versions match
+        if: ${{ steps.changelog_reader.outputs.version != steps.manifest-version.outputs.value }}
+        run: echo "::error manifest.json version does not match CHANGELOG version" && exit 1
+
       - name: Validate the version has not yet been used
         env:
           TAG: v${{ steps.changelog_reader.outputs.version }}
