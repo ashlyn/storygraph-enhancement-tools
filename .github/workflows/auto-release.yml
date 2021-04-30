@@ -38,7 +38,7 @@ jobs:
         uses:  softprops/action-gh-release@v1
         id: create_release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}e
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ashlyn/storygraph-enhancement-tools
         with:
           tag_name: v${{ steps.changelog_reader.outputs.version }}
