@@ -4,11 +4,8 @@
     const BOOK_PANE_SELECTOR = '.book-pane[data-book-id]';
 
     const LIBBY_LINK_SELECTOR = 'libby-link';
-    const LIBBY_LINK_CLASSES = `font-semibold text-xs cursor-pointer ${LIBBY_LINK_SELECTOR}`;
-    const LIBBY_LINK_TEXT = 'Library Search';
-
-    const DIVIDER_CLASSES = 'label';
-    const DIVIDER_TEXT = '| ';
+    const LIBBY_LINK_CLASSES = `${LIBBY_LINK_SELECTOR} text-xs cursor-pointer hover:text-cyan-700 border-b`;
+    const LIBBY_LINK_TEXT = 'Library';
 
     const buildLibbyLinkUrl = (libraryName, title, author) => encodeURI(`https://libbyapp.com/search/${libraryName}/search/query-${title} ${author}/page-1`);
 
@@ -21,13 +18,6 @@
         return libbyLink;
     };
 
-    const buildDividerElement = () => {
-        const divider = document.createElement('span');
-        divider.className = DIVIDER_CLASSES;
-        divider.textContent = DIVIDER_TEXT;
-        return divider;
-    }
-
     const buildActionLinks = (bookPanes, libraryName) => {
         [...bookPanes].forEach(bookPane => {
             if (bookPane.getElementsByClassName(LIBBY_LINK_SELECTOR).length) return;
@@ -36,9 +26,7 @@
             const title = bookPane.getElementsByTagName('h3')[0].innerText;
             const author = bookPane.getElementsByClassName('mb-1')[0].innerText;
 
-            const divider = buildDividerElement();
             const libbyLink = buildLibbyLinkElement(libraryName, title, author);
-            actionLinks.append(divider);
             actionLinks.append(libbyLink);
         });
     };

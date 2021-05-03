@@ -1,40 +1,46 @@
 .container {
-    margin: 1rem;
+    margin: 1.25rem;
     font-family: "Open Sans", sans-serif;
     font-size: 14px;
-    border: rgb(72, 101, 129) solid 0px;
-    border-radius: 6px;
-    color: rgb(72, 101, 129);
+    color: rgb(51, 51, 51);
+    line-height: 20px;
 }
 
-h3 {
+h5 {
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
+    color: rgb(14, 124, 134);
+    margin-bottom: 1rem;
 }
 
-#status {
-    min-height: 1rem;
+.info {
+    min-height: 1.5rem;
     text-align: center;
     margin-top: 0.25rem;
+    line-height: 24px;
 }
 
-#library-name {
+.input-standard {
     width: 200px;
     font-family: "Open Sans", sans-serif;
     font-size: 14px;
-    border: 1px solid rgb(159, 179, 200);
-    border-radius: 4px;
-    color: rgb(16, 42, 67);
-    line-height: 20px;
-    padding: 6px;
+    border: 2px solid rgb(229, 229, 229);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: rgb(51, 51, 51)
 }
 
-#save {
+.btn-primary {
     display: block;
     margin: 1rem auto 0 auto;
-    background-color: rgb(217, 226, 236);
-    color: rgb(51, 78, 104);
-    padding: 8px 12px;
+    background-color: rgb(20, 145, 155);
+    color: rgb(255, 255, 255);
+    padding: 8px 24px;
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 8px;
+}
+
+.input-standard:focus {
+    border: 3px solid rgb(48, 145, 156);
+    border-radius: 6px;
 }

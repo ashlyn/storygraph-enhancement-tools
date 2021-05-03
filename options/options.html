@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="reset.css" />
         <link rel="stylesheet" href="options.css" />
         <title>StoryGraph Enhancement Tools Settings</title>
     </head>
 
     <div class="container">
-        <h3>Configure StoryGraph Enhancement Tools</h3>
+        <h5>Configure StoryGraph Enhancement Tools</h5>
 
         <label for="library-name">
             Library Name <span title="Log into libbyapp.com, select the search icon, and find your library name in the URL">&#9432;</span>
         </label>
-        <input type="text" placeholder="e.g. Lincoln" id="library-name" name="library-name">
+        <input type="text" class="input-standard" placeholder="e.g. Lincoln" id="library-name" name="library-name">
 
-        <input id="save" type="submit" name="save" value="Save Options">
-        <div id="status">
+        <input id="save" class="btn-primary" type="submit" name="save" value="Save Options">
+        <div id="status" class="info">
     </div>
 
     <script src="options.js"></script>
