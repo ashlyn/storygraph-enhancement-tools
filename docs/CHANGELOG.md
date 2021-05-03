@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.1] - 2021-05-03
 
+### Added
+
+- Make `Library Name` info icon clickable
+
 ### Fixed
 
 - Updated link styling (and text to fit) after StoryGraph UI updates
