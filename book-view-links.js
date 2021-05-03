@@ -34,7 +34,7 @@
 
             const actionLinks = [...bookPane.getElementsByClassName('book-action-links')][0];
             const title = bookPane.getElementsByTagName('h3')[0].innerText;
-            const author = bookPane.getElementsByClassName('mb-1 md:text-lg')[0].innerText;
+            const author = bookPane.getElementsByClassName('mb-1')[0].innerText;
 
             const divider = buildDividerElement();
             const libbyLink = buildLibbyLinkElement(libraryName, title, author);
@@ -54,9 +54,13 @@
         });
     };
 
+    const observeMainContainer = () => {
+        const mainContainerElements = document.getElementsByTagName('html')[0];
+        const observerConfig = { attributes: false, childList: true, subtree: true };
+        const observer = new MutationObserver(insertLinks);
+        observer.observe(mainContainerElements, observerConfig);
+    };
+
     insertLinks();
-    const targetNode = [...document.getElementsByTagName('main')][0];
-    const observerConfig = { attributes: false, childList: true, subtree: true };
-    const observer = new MutationObserver(insertLinks);
-    observer.observe(targetNode, observerConfig);
+    observeMainContainer();
 }

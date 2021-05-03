@@ -1,0 +1,51 @@
+name: Auto-release version
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/CHANGELOG.md'
+      - 'manifest.json'
+      - 'options/**'
+      - 'book-view-links.js'
+
+jobs:
+  build:
+    name: Create tag and release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get version from CHANGELOG.md
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          path: ./docs/CHANGELOG.md
+
+      - name: Push tag with correct version
+        id: push_tag
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ steps.changelog_reader.outputs.version }}
+          release_branches: main
+
+      - name: Create a new release
+        uses:  softprops/action-gh-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ashlyn/storygraph-enhancement-tools
+        with:
+          tag_name: v${{ steps.changelog_reader.outputs.version }}
+          name: ${{ steps.changelog_reader.outputs.version }}
+          body: ${{ steps.changelog_reader.outputs.changes }}
+          prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
+          draft: false
+          files: |
+            screenshots/**
+          

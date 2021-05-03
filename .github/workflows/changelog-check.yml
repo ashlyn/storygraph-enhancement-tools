@@ -1,0 +1,45 @@
+name: Validate version
+
+on:
+    pull_request:
+      paths:
+        - 'docs/CHANGELOG.md'
+        - 'manifest.json'
+        - 'options/**'
+        - 'book-view-links.js'
+
+jobs:
+  build:
+    name: Verify if CHANGELOG was updated
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get version from CHANGELOG.md
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          path: ./docs/CHANGELOG.md
+
+      - name: Get version from manifest.json
+        id: manifest-version
+        uses: ashley-taylor/read-json-property-action@v1.0
+        with:
+          path: manifest.json
+          property: version
+
+      - name: Validate manifest.json and CHANGELOG versions match
+        if: ${{ steps.changelog_reader.outputs.version != steps.manifest-version.outputs.value }}
+        run: echo "::error manifest.json version does not match CHANGELOG version" && exit 1
+
+      - name: Validate the version has not yet been used
+        env:
+          TAG: v${{ steps.changelog_reader.outputs.version }}
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "::error ::tag $TAG exists already"
+            exit 1
+          fi
