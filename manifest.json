@@ -1,22 +1,22 @@
 {
     "name": "StoryGraph Enhancement Tools",
     "description": "Adds some helpful UI elements, such as direct links to search your local library, to The StoryGraph.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "manifest_version": 3,
     "content_scripts": [
         {
             "matches": ["*://app.thestorygraph.com/*"],
-            "js": ["book-view-links.js"]
+            "js": ["src/book-view-links.js"]
         }
     ],
     "permissions": ["storage"],
     "icons": {
-        "16": "/assets/logo16.png",
-        "32": "/assets/logo32.png",
-        "48": "/assets/logo48.png",
-        "128": "/assets/logo128.png"
+        "16": "/src/assets/logo16.png",
+        "32": "/src/assets/logo32.png",
+        "48": "/src/assets/logo48.png",
+        "128": "/src/assets/logo128.png"
     },
     "action": {
-        "default_popup": "options/options.html"
+        "default_popup": "src/options/options.html"
     }
 }
