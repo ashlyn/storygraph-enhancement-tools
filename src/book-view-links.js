@@ -33,12 +33,24 @@
 
     const getAllBookPanes = () => document.querySelectorAll(BOOK_PANE_SELECTOR);
 
+    const removeLinks = () => {
+        const allLibbyLinks = document.getElementsByClassName(LIBBY_LINK_SELECTOR);
+        [...allLibbyLinks].forEach(link => link.remove());
+    };
+
     const insertLinks = () => {
         chrome.storage.sync.get({
-            libraryName: DEFAULT_LIBRARY_NAME,
-        }, ({ libraryName }) => {
-            const bookPanes = getAllBookPanes();
-            buildActionLinks(bookPanes, libraryName);
+            librarySettings: {
+                libraryLinksEnabled: true,
+                libraryName: DEFAULT_LIBRARY_NAME,
+            }
+        }, ({ librarySettings: { libraryLinksEnabled, libraryName }}) => {
+            if (libraryLinksEnabled) {
+                const bookPanes = getAllBookPanes();
+                buildActionLinks(bookPanes, libraryName);
+            } else {
+                removeLinks();
+            }
         });
     };
 

@@ -9,10 +9,27 @@
     <div class="container">
         <h5>Configure StoryGraph Enhancement Tools</h5>
 
+        <div class="input-group">
+            <h4>Enable Library Links?</h4>
+            <input class="input-slider" id="enable-library-links" type="checkbox" />
+            <label class="slider" for="enable-library-links"></label>
+        </div>
+
         <label for="library-name">
             Library Name <a href="https://libbyapp.com" target="_blank" title="Log into libbyapp.com, select the search icon, and find your library name in the URL">&#9432;</a>
+            <input type="text" class="input-standard" placeholder="e.g. Lincoln" id="library-name" name="library-name">
         </label>
-        <input type="text" class="input-standard" placeholder="e.g. Lincoln" id="library-name" name="library-name">
+
+        <div class="input-group">
+            <h4>Enable Ebook Links?</h4>
+            <input class="input-slider" id="enable-ebook-links" type="checkbox" />
+            <label class="slider" for="enable-ebook-links"></label>
+        </div>
+
+        <label for="amazon-domain">
+            Amazon Domain
+            <select name="amazon-domain" id="amazon-domain"></select>
+        </label>
 
         <input id="save" class="btn-primary" type="submit" name="save" value="Save Options">
         <div id="status" class="info">
