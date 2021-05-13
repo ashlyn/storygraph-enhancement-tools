@@ -2,6 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="reset.css" />
+        <link rel="stylesheet" href="toggle.css" />
         <link rel="stylesheet" href="options.css" />
         <title>StoryGraph Enhancement Tools Settings</title>
     </head>
@@ -9,27 +10,33 @@
     <div class="container">
         <h5>Configure StoryGraph Enhancement Tools</h5>
 
-        <div class="input-group">
-            <h4>Enable Library Links?</h4>
-            <input class="input-slider" id="enable-library-links" type="checkbox" />
-            <label class="slider" for="enable-library-links"></label>
-        </div>
+        <fieldset class="option-group">
+            <span class="labeled-toggle">
+                <div class="toggle-group">
+                    <input class="input-slider" id="enable-library-links" type="checkbox" />
+                    <label class="slider" for="enable-library-links"></label>
+                </div>
+                <h4>Library Links</h4>
+            </span>
 
-        <label for="library-name">
-            Library Name <a href="https://libbyapp.com" target="_blank" title="Log into libbyapp.com, select the search icon, and find your library name in the URL">&#9432;</a>
+            <label for="library-name">
+                Library Name&nbsp;<a href="https://libbyapp.com" target="_blank" title="Log into libbyapp.com, select the search icon, and find your library name in the URL">&#9432;</a>
+            </label>
             <input type="text" class="input-standard" placeholder="e.g. Lincoln" id="library-name" name="library-name">
-        </label>
+        </fieldset>
 
-        <div class="input-group">
-            <h4>Enable Ebook Links?</h4>
-            <input class="input-slider" id="enable-ebook-links" type="checkbox" />
-            <label class="slider" for="enable-ebook-links"></label>
-        </div>
+        <fieldset class="option-group">
+            <span class="labeled-toggle">
+                <div class="toggle-group">
+                    <input class="input-slider" id="enable-amazon-search" type="checkbox" />
+                    <label class="slider" for="enable-amazon-search"></label>
+                </div>
+                <h4>Amazon Search Links</h4>
+            </span>
 
-        <label for="amazon-domain">
-            Amazon Domain
-            <select name="amazon-domain" id="amazon-domain"></select>
-        </label>
+            <label for="amazon-domain">Amazon Domain</label>
+            <select class="input-standard" name="amazon-domain" id="amazon-domain"></select>
+        </fieldset>
 
         <input id="save" class="btn-primary" type="submit" name="save" value="Save Options">
         <div id="status" class="info">

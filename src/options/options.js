@@ -3,7 +3,7 @@ const DEFAULT_LIBRARY_NAME = 'lincoln';
 const LIBRARY_NAME_INPUT_SELECTOR = 'library-name';
 const STATUS_TEXT_SELECTOR = 'status';
 const LIBRARY_LINKS_ENABLED_SELECTOR = 'enable-library-links';
-const EBOOK_LINKS_ENABLED_SELECTOR = 'enable-ebook-links';
+const AMAZON_LINKS_ENABLED_SELECTOR = 'enable-amazon-search';
 const AMAZON_DOMAIN_SELECTOR = 'amazon-domain';
 
 const BASE_AMAZON_DOMAIN = 'https://amazon';
@@ -73,7 +73,7 @@ const amazonDomains = [
 
 const toggleLibraryLinks = ({ target: { checked }}) => toggleInputDisabledAttribute(!checked, LIBRARY_NAME_INPUT_SELECTOR);
 
-const toggleEbookLinks = ({ target: { checked }}) => toggleInputDisabledAttribute(!checked, AMAZON_DOMAIN_SELECTOR);
+const toggleAmazonLinks = ({ target: { checked }}) => toggleInputDisabledAttribute(!checked, AMAZON_DOMAIN_SELECTOR);
 
 const toggleInputDisabledAttribute = (disabled, selector) => {
     const input = document.getElementById(selector);
@@ -100,7 +100,7 @@ const saveOptions = () => {
     const libraryLinksEnabled = document.getElementById(LIBRARY_LINKS_ENABLED_SELECTOR).checked;
     const libraryName = document.getElementById(LIBRARY_NAME_INPUT_SELECTOR).value;
 
-    const ebookLinksEnabled = document.getElementById(EBOOK_LINKS_ENABLED_SELECTOR).checked;
+    const amazonSearchLinksEnabled = document.getElementById(AMAZON_LINKS_ENABLED_SELECTOR).checked;
 
     const selectedAmazonDomain = document.getElementById(AMAZON_DOMAIN_SELECTOR).value || DEFAULT_AMAZON_DOMAIN;
     chrome.storage.sync.set({
@@ -108,8 +108,8 @@ const saveOptions = () => {
             libraryLinksEnabled: libraryLinksEnabled,
             libraryName: libraryName,
         },
-        ebookSettings: {
-            ebookLinksEnabled: ebookLinksEnabled,
+        amazonSearchSettings: {
+            amazonSearchLinksEnabled: amazonSearchLinksEnabled,
             selectedAmazonDomain: selectedAmazonDomain,
         },
     }, () => {
@@ -127,21 +127,22 @@ const restoreOptions = () => {
             libraryLinksEnabled: true,
             libraryName: DEFAULT_LIBRARY_NAME,
         },
-        ebookSettings: {
-            ebookLinksEnabled: true,
+        amazonSearchSettings: {
+            amazonSearchLinksEnabled: true,
             selectedAmazonDomain: DEFAULT_AMAZON_DOMAIN,
         },
-    }, ({ librarySettings: { libraryLinksEnabled, libraryName }, ebookSettings: { ebookLinksEnabled, selectedAmazonDomain }}) => {
+    }, ({ librarySettings: { libraryLinksEnabled, libraryName }, amazonSearchSettings: { amazonSearchLinksEnabled, selectedAmazonDomain }}) => {
         document.getElementById(LIBRARY_LINKS_ENABLED_SELECTOR).checked = libraryLinksEnabled;
         const libraryNameInput = document.getElementById(LIBRARY_NAME_INPUT_SELECTOR);
         libraryNameInput.value = libraryName;
         libraryNameInput.disabled = !libraryLinksEnabled;
         
-        document.getElementById(EBOOK_LINKS_ENABLED_SELECTOR).checked = ebookLinksEnabled;
+        document.getElementById(AMAZON_LINKS_ENABLED_SELECTOR).checked = amazonSearchLinksEnabled;
 
         const amazonOptions = buildAmazonOptions(selectedAmazonDomain);
         const amazonSelect = document.getElementById(AMAZON_DOMAIN_SELECTOR);
         amazonSelect.append(...amazonOptions);
+        amazonSelect.disabled = !amazonSearchLinksEnabled;
     });
 };
 
@@ -149,4 +150,4 @@ document.addEventListener('DOMContentLoaded', restoreOptions);
 document.getElementById('save').addEventListener('click', saveOptions);
 
 document.getElementById(LIBRARY_LINKS_ENABLED_SELECTOR).addEventListener('change', toggleLibraryLinks);
-document.getElementById(EBOOK_LINKS_ENABLED_SELECTOR).addEventListener('change', toggleEbookLinks);
+document.getElementById(AMAZON_LINKS_ENABLED_SELECTOR).addEventListener('change', toggleAmazonLinks);
