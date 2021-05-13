@@ -44,29 +44,37 @@
         };
     }
 
-    const buildLibraryLinks = (bookPanes, libraryName) => {
-        [...bookPanes].forEach(bookPane => {
-            if (bookPane.getElementsByClassName(LIBBY_LINK_SELECTOR).length) return;
+    const appendLibraryLink = (bookPane, libraryName, { title, author }) => {
+        if (bookPane.getElementsByClassName(LIBBY_LINK_SELECTOR).length) return;
 
-            const actionLinks = bookPane.getElementsByClassName('book-action-links')[0];
-            const { title, author } = getBookData(bookPane);
-
-            const libbyLink = buildLibbyLinkElement(libraryName, title, author);
-            actionLinks.append(libbyLink);
-        });
+        const actionLinks = bookPane.getElementsByClassName('book-action-links')[0];
+        const libbyLink = buildLibbyLinkElement(libraryName, title, author);
+        actionLinks.append(libbyLink);
     };
 
     const isUsAmazonDomain = (amazonDomain) => amazonDomain === DEFAULT_AMAZON_DOMAIN || amazonDomain === '.us';
 
-    const buildAmazonLinks = (bookPanes, amazonDomain) => {
+    const appendAmazonLink = (bookPane, selectedAmazonDomain, { title, author}) => {
+        if (bookPane.getElementsByClassName(AMAZON_LINK_SELECTOR).length) return;
+
+        const buyLinks = bookPane.getElementsByClassName(BUY_LINK_SELECTOR)[0].getElementsByTagName('p')[isUsAmazonDomain(selectedAmazonDomain) ? 0 : 1];
+
+        const amazonLink = buildAmazonLinkElement(selectedAmazonDomain, title, author);
+        buyLinks.append(...amazonLink);
+    };
+
+    const buildAllLinks = (bookPanes, {
+        librarySettings: { libraryLinksEnabled, libraryName },
+        amazonSearchSettings: { amazonSearchLinksEnabled, selectedAmazonDomain },
+    }) => {
+        if (!libraryLinksEnabled) removeLinks(LIBBY_LINK_SELECTOR);
+        if (!amazonSearchLinksEnabled) removeLinks(AMAZON_LINK_SELECTOR);
+        if (!libraryLinksEnabled && !amazonSearchLinksEnabled) return;
+        
         [...bookPanes].forEach(bookPane => {
-            if (bookPane.getElementsByClassName(AMAZON_LINK_SELECTOR).length) return;
-
-            const buyLinks = bookPane.getElementsByClassName(BUY_LINK_SELECTOR)[0].getElementsByTagName('p')[isUsAmazonDomain(amazonDomain) ? 0 : 1];
-            const { title, author } = getBookData(bookPane);
-
-            const amazonLink = buildAmazonLinkElement(amazonDomain, title, author);
-            buyLinks.append(...amazonLink);
+            const bookData = getBookData(bookPane);
+            appendLibraryLink(bookPane, libraryName, bookData);
+            appendAmazonLink(bookPane, selectedAmazonDomain, bookData);
         });
     };
 
@@ -87,10 +95,9 @@
                 amazonSearchLinksEnabled: true,
                 selectedAmazonDomain: DEFAULT_AMAZON_DOMAIN,
             },
-        }, ({ librarySettings: { libraryLinksEnabled, libraryName }, amazonSearchSettings: { amazonSearchLinksEnabled, selectedAmazonDomain }}) => {
+        }, (userSettings) => {
             const bookPanes = getAllBookPanes();
-            libraryLinksEnabled ? buildLibraryLinks(bookPanes, libraryName) : removeLinks(LIBBY_LINK_SELECTOR);
-            amazonSearchLinksEnabled ? buildAmazonLinks(bookPanes, selectedAmazonDomain) : removeLinks(AMAZON_LINK_SELECTOR);
+            buildAllLinks(bookPanes, userSettings);
         });
     };
 

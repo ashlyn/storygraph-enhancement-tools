@@ -8,7 +8,7 @@ on:
       - 'docs/CHANGELOG.md'
       - 'manifest.json'
       - 'options/**'
-      - 'book-view-links.js'
+      - 'book-pane-links.js'
 
 jobs:
   build:

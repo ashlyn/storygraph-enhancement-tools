@@ -6,7 +6,7 @@
     "content_scripts": [
         {
             "matches": ["*://app.thestorygraph.com/*"],
-            "js": ["src/book-view-links.js"]
+            "js": ["src/book-pane-links.js"]
         }
     ],
     "permissions": ["storage"],
