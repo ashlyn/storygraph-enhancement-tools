@@ -19,36 +19,16 @@
     const EBOOKS_LINK_TEXT = 'eBooks.com';
 
     const buildLibbyLinkUrl = (libraryName, title, author) => encodeURI(`https://libbyapp.com/search/${libraryName}/search/query-${title} ${author}/page-1`);
-
-    const buildLibbyLinkElement = (libraryName, title, author) => {
-        const libbyLink = document.createElement('a');
-        libbyLink.className = LIBBY_LINK_CLASSES;
-        libbyLink.href = buildLibbyLinkUrl(libraryName, title, author);
-        libbyLink.textContent = LIBBY_LINK_TEXT;
-        libbyLink.target = '_blank';
-        return libbyLink;
-    };
-
     const buildAmazonLinkUrl = (amazonDomain, title, author) => encodeURI(`https://amazon${amazonDomain}/s?k=${title}+${author}`);
-
-    const buildAmazonLinkElement = (amazonDomain, title, author) => {
-        const amazonLink = document.createElement('a');
-        amazonLink.className = AMAZON_LINK_CLASSES;
-        amazonLink.href = buildAmazonLinkUrl(amazonDomain, title, author);
-        amazonLink.textContent = amazonLinkText(amazonDomain);
-        amazonLink.target = '_blank';
-        return [document.createElement('br'), amazonLink];
-    };
-
     const buildEbooksLinkUrl = (title, author) => encodeURI(`https://www.ebooks.com/searchapp/searchresults.net?term=${title}+${author}`);
 
-    const buildEbooksLinkElement = (title, author) => {
-        const ebooksLink = document.createElement('a');
-        ebooksLink.className = EBOOKS_LINK_CLASSES;
-        ebooksLink.href = buildEbooksLinkUrl(title, author);
-        ebooksLink.textContent = EBOOKS_LINK_TEXT;
-        ebooksLink.target = '_blank';
-        return [document.createElement('br'), ebooksLink];
+    const buildLinkElement = ({ url, text, classNames }) => {
+        const linkElement = document.createElement('a');
+        linkElement.className = classNames;
+        linkElement.href = url;
+        linkElement.textContent = text;
+        linkElement.target = '_blank';
+        return linkElement;
     };
 
     const getBookData = (bookPane) => {
@@ -64,7 +44,11 @@
         if (bookPane.getElementsByClassName(LIBBY_LINK_SELECTOR).length) return;
 
         const actionLinks = bookPane.getElementsByClassName('book-action-links')[0];
-        const libbyLink = buildLibbyLinkElement(libraryName, title, author);
+        const libbyLink = buildLinkElement({
+            url: buildLibbyLinkUrl(libraryName, title, author),
+            text: LIBBY_LINK_TEXT,
+            classNames: LIBBY_LINK_CLASSES,
+        });
         actionLinks.append(libbyLink);
     };
 
@@ -75,8 +59,12 @@
 
         const buyLinks = bookPane.getElementsByClassName(BUY_LINK_SELECTOR)[0].getElementsByTagName('p')[isUsAmazonDomain(selectedAmazonDomain) ? 0 : 1];
 
-        const amazonLink = buildAmazonLinkElement(selectedAmazonDomain, title, author);
-        buyLinks.append(...amazonLink);
+        const amazonLinkElement = buildLinkElement({
+            url: buildAmazonLinkUrl(selectedAmazonDomain, title, author),
+            text: amazonLinkText(selectedAmazonDomain),
+            classNames: AMAZON_LINK_CLASSES,
+        });
+        buyLinks.append(document.createElement('br'), amazonLinkElement);
     };
 
     const appendEbooksLinks = (bookPane, { title, author }) => {
@@ -85,8 +73,12 @@
         const buyLinks = [...bookPane.getElementsByClassName(BUY_LINK_SELECTOR)[0].getElementsByTagName('p')].slice(0, 2);
         
         // append links to both `United States` and `Other countries` category and let eBooks.com handle locale
-        const ebooksLink = buildEbooksLinkElement(title, author);
-        buyLinks.forEach(link => link.append(...ebooksLink));
+        const ebooksLinkElement = buildLinkElement({
+            url: buildEbooksLinkUrl(title, author),
+            text: EBOOKS_LINK_TEXT,
+            classNames: EBOOKS_LINK_CLASSES,
+        });
+        buyLinks.forEach(link => link.append(document.createElement('br'), ebooksLinkElement.cloneNode(true)));
     };
 
     const buildAllLinks = (bookPanes, {

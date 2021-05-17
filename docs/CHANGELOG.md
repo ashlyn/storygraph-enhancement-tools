@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ability to toggle individual features on/off
 - Amazon search links in `Buy` section of all book panes (Amazon storefront is configurable)
+- eBooks.com search links in `Buy` section of all book panes
 
 ## Fixed
 
