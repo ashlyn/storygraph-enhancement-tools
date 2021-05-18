@@ -13,6 +13,12 @@ h5 {
     margin-bottom: 1rem;
 }
 
+h4 {
+    font-size: 14px;
+    font-weight: 600;
+    width: max-content;
+}
+
 label a {
     color: rgb(51, 51, 51);
     text-decoration: none;
@@ -29,8 +35,29 @@ label a:hover {
     line-height: 24px;
 }
 
+.option-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+.option-group * {
+    display: inline-flex;
+}
+
+.labeled-toggle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.labeled-toggle * {
+    margin-right: 0.3rem;
+}
+
 .input-standard {
-    width: 200px;
+    width: 100%;
     font-family: "Open Sans", sans-serif;
     font-size: 14px;
     border: 2px solid rgb(229, 229, 229);
@@ -38,6 +65,7 @@ label a:hover {
     padding: 8px 12px;
     color: rgb(51, 51, 51);
     margin: 1px;
+    box-sizing: border-box;
 }
 
 .btn-primary {
