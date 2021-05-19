@@ -6,6 +6,21 @@
     line-height: 20px;
 }
 
+.options {
+    display: flex;
+    flex-direction: row;
+    flex-flow:  space-between;
+    justify-content: space-between;
+}
+
+.options > .column {
+    margin: 0.5rem;
+}
+
+.column {
+    flex: 1 1 0;
+}
+
 h5 {
     font-size: 16px;
     font-weight: 700;
@@ -82,4 +97,18 @@ label a:hover {
     border: 3px solid rgb(48, 145, 156);
     border-radius: 6px;
     margin: 0px;
+}
+
+.hideable {
+    transition: all 0.375s ease-in;
+}
+
+.hideable.hidden {
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.375s ease-out;
+    line-height: 0;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }

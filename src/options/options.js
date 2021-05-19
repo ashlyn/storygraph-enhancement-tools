@@ -1,10 +1,14 @@
 const DEFAULT_LIBRARY_NAME = 'lincoln';
+const LIBBY_PLATFORM = 'libby';
+const OVERDRIVE_PLATFORM = 'overdrive';
+const DEFAULT_LIBRARY_PLATFORM = OVERDRIVE_PLATFORM;
 
 const LIBRARY_NAME_INPUT_SELECTOR = 'library-name';
 const STATUS_TEXT_SELECTOR = 'status';
 const LIBRARY_LINKS_ENABLED_SELECTOR = 'enable-library-links';
 const AMAZON_LINKS_ENABLED_SELECTOR = 'enable-amazon-search';
 const AMAZON_DOMAIN_SELECTOR = 'amazon-domain';
+const LIBRARY_PLATFORM_INPUTS_SELECTOR = 'input[name=library-platform]';
 
 const EBOOKS_LINKS_ENABLED_SELECTOR = 'enable-ebooks-search';
 
@@ -73,7 +77,11 @@ const amazonDomains = [
     },
 ];
 
-const toggleLibraryLinks = ({ target: { checked }}) => toggleInputDisabledAttribute(!checked, LIBRARY_NAME_INPUT_SELECTOR);
+const HIDDEN_CLASS = 'hidden';
+
+const toggleLibraryLinks = ({ target: { checked }}) => [LIBRARY_NAME_INPUT_SELECTOR, LIBBY_PLATFORM, OVERDRIVE_PLATFORM].forEach(selector => toggleInputDisabledAttribute(!checked, selector));
+
+const toggleLibraryPlatform = ({ target: { checked, value }}) => toggleInputDisabledAttribute(!(checked && value === LIBBY_PLATFORM), LIBRARY_NAME_INPUT_SELECTOR);
 
 const toggleAmazonLinks = ({ target: { checked }}) => toggleInputDisabledAttribute(!checked, AMAZON_DOMAIN_SELECTOR);
 
@@ -102,6 +110,8 @@ const saveOptions = () => {
     const libraryLinksEnabled = document.getElementById(LIBRARY_LINKS_ENABLED_SELECTOR).checked;
     const libraryName = document.getElementById(LIBRARY_NAME_INPUT_SELECTOR).value;
 
+    const libraryPlatform = [...document.querySelectorAll(LIBRARY_PLATFORM_INPUTS_SELECTOR)].find(radio => radio.checked)?.value || DEFAULT_LIBRARY_PLATFORM;
+
     const amazonSearchLinksEnabled = document.getElementById(AMAZON_LINKS_ENABLED_SELECTOR).checked;
     const selectedAmazonDomain = document.getElementById(AMAZON_DOMAIN_SELECTOR).value || DEFAULT_AMAZON_DOMAIN;
 
@@ -110,6 +120,7 @@ const saveOptions = () => {
     chrome.storage.sync.set({
         librarySettings: {
             libraryLinksEnabled: libraryLinksEnabled,
+            libraryPlatform: libraryPlatform,
             libraryName: libraryName,
         },
         amazonSearchSettings: {
@@ -126,10 +137,22 @@ const saveOptions = () => {
     });
 };
 
+const updateLibraryNameInputDisplay = (shouldDisplay) => {
+    const libraryNameInput = document.getElementById(LIBRARY_NAME_INPUT_SELECTOR);
+    if (!shouldDisplay) {
+        libraryNameInput.previousElementSibling.classList.add(HIDDEN_CLASS);
+        libraryNameInput.classList.add(HIDDEN_CLASS);
+    } else {
+        libraryNameInput.previousElementSibling.classList.remove(HIDDEN_CLASS);
+        libraryNameInput.classList.remove(HIDDEN_CLASS);
+    }
+};
+
 const restoreOptions = () => {
     chrome.storage.sync.get({
         librarySettings: {
             libraryLinksEnabled: true,
+            libraryPlatform: DEFAULT_LIBRARY_PLATFORM,
             libraryName: DEFAULT_LIBRARY_NAME,
         },
         amazonSearchSettings: {
@@ -138,14 +161,17 @@ const restoreOptions = () => {
         },
         ebooksSearchSettings: { ebooksSearchLinksEnabled: true, },
     }, ({
-            librarySettings: { libraryLinksEnabled, libraryName },
+            librarySettings: { libraryLinksEnabled, libraryPlatform, libraryName },
             amazonSearchSettings: { amazonSearchLinksEnabled, selectedAmazonDomain },
             ebooksSearchSettings: { ebooksSearchLinksEnabled },
         }) => {
         document.getElementById(LIBRARY_LINKS_ENABLED_SELECTOR).checked = libraryLinksEnabled;
         const libraryNameInput = document.getElementById(LIBRARY_NAME_INPUT_SELECTOR);
         libraryNameInput.value = libraryName;
-        libraryNameInput.disabled = !libraryLinksEnabled;
+        libraryNameInput.disabled = !libraryLinksEnabled || libraryPlatform !== LIBBY_PLATFORM;
+        updateLibraryNameInputDisplay(libraryPlatform === LIBBY_PLATFORM);
+
+        document.querySelectorAll(LIBRARY_PLATFORM_INPUTS_SELECTOR).forEach(radio => radio.checked = radio.value === libraryPlatform);
         
         document.getElementById(AMAZON_LINKS_ENABLED_SELECTOR).checked = amazonSearchLinksEnabled;
 
@@ -163,3 +189,8 @@ document.getElementById('save').addEventListener('click', saveOptions);
 
 document.getElementById(LIBRARY_LINKS_ENABLED_SELECTOR).addEventListener('change', toggleLibraryLinks);
 document.getElementById(AMAZON_LINKS_ENABLED_SELECTOR).addEventListener('change', toggleAmazonLinks);
+[...document.querySelectorAll(LIBRARY_PLATFORM_INPUTS_SELECTOR)].forEach(radio => radio.addEventListener('change', (e) => {
+    const { checked, value } = e.target;
+    toggleLibraryPlatform(e);
+    updateLibraryNameInputDisplay(checked && value === LIBBY_PLATFORM);
+}));
