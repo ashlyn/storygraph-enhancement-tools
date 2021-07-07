@@ -1,8 +1,11 @@
 {
     "name": "StoryGraph Enhancement Tools",
     "description": "Adds some helpful UI elements, such as direct links to search your local library, to The StoryGraph.",
-    "version": "1.2.0",
+    "version": "2.0.0",
     "manifest_version": 3,
+    "background": {
+        "service_worker": "service-worker.js"
+    },
     "content_scripts": [
         {
             "matches": ["*://app.thestorygraph.com/*"],
