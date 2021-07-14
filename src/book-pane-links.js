@@ -1,5 +1,8 @@
 {
     const DEFAULT_LIBRARY_NAME = 'lincoln';
+    const LIBBY_PLATFORM = 'libby';
+    const OVERDRIVE_PLATFORM = 'overdrive';
+    const DEFAULT_LIBRARY_PLATFORM = OVERDRIVE_PLATFORM;
 
     const BOOK_PANE_SELECTOR = '.book-pane[data-book-id]';
 
@@ -18,9 +21,10 @@
     const EBOOKS_LINK_CLASSES = `${EBOOKS_LINK_SELECTOR} ${BUY_LINK_CLASSES}`;
     const EBOOKS_LINK_TEXT = 'eBooks.com';
 
-    const buildLibbyLinkUrl = (libraryName, title, author) => encodeURI(`https://libbyapp.com/search/${libraryName}/search/query-${title} ${author}/page-1`);
-    const buildAmazonLinkUrl = (amazonDomain, title, author) => encodeURI(`https://amazon${amazonDomain}/s?k=${title}+${author}`);
-    const buildEbooksLinkUrl = (title, author) => encodeURI(`https://www.ebooks.com/searchapp/searchresults.net?term=${title}+${author}`);
+    const buildLibbyLinkUrl = ({ libraryName, title, author }) => encodeURI(`https://libbyapp.com/search/${libraryName}/search/query-${title} ${author}/page-1`);
+    const buildOverdriveLinkUrl = ({ title, author}) => encodeURI(`https://overdrive.com/search?q=${title}+${author}`);
+    const buildAmazonLinkUrl = ({ amazonDomain, title, author }) => encodeURI(`https://amazon${amazonDomain}/s?k=${title}+${author}`);
+    const buildEbooksLinkUrl = ({ title, author }) => encodeURI(`https://www.ebooks.com/searchapp/searchresults.net?term=${title}+${author}`);
 
     const buildLinkElement = ({ url, text, classNames }) => {
         const linkElement = document.createElement('a');
@@ -40,12 +44,18 @@
         };
     }
 
-    const appendLibraryLink = (bookPane, libraryName, { title, author }) => {
+    const libraryLinkBuilder = {
+        [LIBBY_PLATFORM]: buildLibbyLinkUrl,
+        [OVERDRIVE_PLATFORM]: buildOverdriveLinkUrl,
+    };
+
+    const appendLibraryLink = (bookPane, { libraryPlatform, libraryName }, bookData) => {
         if (bookPane.getElementsByClassName(LIBBY_LINK_SELECTOR).length) return;
 
         const actionLinks = bookPane.getElementsByClassName('book-action-links')[0];
+        const linkBuilder = libraryLinkBuilder[libraryPlatform];
         const libbyLink = buildLinkElement({
-            url: buildLibbyLinkUrl(libraryName, title, author),
+            url: linkBuilder({ libraryName: libraryName, ...bookData }),
             text: LIBBY_LINK_TEXT,
             classNames: LIBBY_LINK_CLASSES,
         });
@@ -54,27 +64,27 @@
 
     const isUsAmazonDomain = (amazonDomain) => amazonDomain === DEFAULT_AMAZON_DOMAIN || amazonDomain === '.us';
 
-    const appendAmazonLink = (bookPane, selectedAmazonDomain, { title, author}) => {
+    const appendAmazonLink = (bookPane, selectedAmazonDomain, bookData) => {
         if (bookPane.getElementsByClassName(AMAZON_LINK_SELECTOR).length) return;
 
         const buyLinks = bookPane.getElementsByClassName(BUY_LINK_SELECTOR)[0].getElementsByTagName('p')[isUsAmazonDomain(selectedAmazonDomain) ? 0 : 1];
 
         const amazonLinkElement = buildLinkElement({
-            url: buildAmazonLinkUrl(selectedAmazonDomain, title, author),
+            url: buildAmazonLinkUrl({ amazonDomain: selectedAmazonDomain, ...bookData }),
             text: amazonLinkText(selectedAmazonDomain),
             classNames: AMAZON_LINK_CLASSES,
         });
         buyLinks.append(document.createElement('br'), amazonLinkElement);
     };
 
-    const appendEbooksLinks = (bookPane, { title, author }) => {
+    const appendEbooksLinks = (bookPane, bookData) => {
         if (bookPane.getElementsByClassName(EBOOKS_LINK_SELECTOR).length) return;
         
         const buyLinks = [...bookPane.getElementsByClassName(BUY_LINK_SELECTOR)[0].getElementsByTagName('p')].slice(0, 2);
         
         // append links to both `United States` and `Other countries` category and let eBooks.com handle locale
         const ebooksLinkElement = buildLinkElement({
-            url: buildEbooksLinkUrl(title, author),
+            url: buildEbooksLinkUrl(bookData),
             text: EBOOKS_LINK_TEXT,
             classNames: EBOOKS_LINK_CLASSES,
         });
@@ -82,10 +92,11 @@
     };
 
     const buildAllLinks = (bookPanes, {
-        librarySettings: { libraryLinksEnabled, libraryName },
+        librarySettings,
         amazonSearchSettings: { amazonSearchLinksEnabled, selectedAmazonDomain },
         ebooksSearchSettings: { ebooksSearchLinksEnabled },
     }) => {
+        const { libraryLinksEnabled } = librarySettings;
         if (!libraryLinksEnabled) removeLinks(LIBBY_LINK_SELECTOR);
         if (!amazonSearchLinksEnabled) removeLinks(AMAZON_LINK_SELECTOR);
         if (!ebooksSearchLinksEnabled) removeLinks(EBOOKS_LINK_SELECTOR);
@@ -96,7 +107,7 @@
 
         [...bookPanes].forEach(bookPane => {
             const bookData = getBookData(bookPane);
-            if (libraryLinksEnabled) appendLibraryLink(bookPane, libraryName, bookData);
+            if (libraryLinksEnabled) appendLibraryLink(bookPane, librarySettings, bookData);
             if (amazonSearchLinksEnabled) appendAmazonLink(bookPane, selectedAmazonDomain, bookData);
             if (ebooksSearchLinksEnabled) appendEbooksLinks(bookPane, bookData);
         });
@@ -113,6 +124,7 @@
         chrome.storage.sync.get({
             librarySettings: {
                 libraryLinksEnabled: true,
+                libraryPlatform: DEFAULT_LIBRARY_PLATFORM,
                 libraryName: DEFAULT_LIBRARY_NAME,
             },
             amazonSearchSettings: {
