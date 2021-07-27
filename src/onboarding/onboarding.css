@@ -1,5 +1,4 @@
 :root{
-    /**********/
     /* ### Theme Colors ### */
     /* Note: #14919b ! since this is used frequently, you could call this a theme color var */
     --theme_ashblu: #14919b; /* used in var --rad_label_i-chk */
@@ -26,8 +25,8 @@
     /* Created Theme Variables */
     /* theme: _ashblue / _ashmercury */
     
-    /**********/
     /* ### SRC/SHARED ### */
+    /* site.css */
     /* Created Theme Variables */
     /* theme: _ashash / _ashblu_darker / _ashblu_dark */
 }
