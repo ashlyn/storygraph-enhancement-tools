@@ -1,25 +1,36 @@
 :root{
-    
+    /**********/
+    /* ### Theme Colors ### */
     /* Note: #14919b ! since this is used frequently, you could call this a theme color var */
     --theme_ashblu: #14919b; /* used in var --rad_label_i-chk */
     /* Note: #E5E5E5 ! is used frequently too */ 
     --theme_ashmercury: #E5E5E5; /* used in --feature_border */
-    
+    --theme_ashash: #333333;
+    --theme_ashblu_darker: #0e7c86; /* DARKER THEME COLOR */
+    --theme_ashblu_dark: #30919c; /* DARKER THAN THEME COLOR, LIGHTER THAN DARKER THEME COLOR */
+
+    /* ### SRC/ONBOARDING ### */
     /* onboarding.css */
     --body_bg: #FAFAFA;
     --feature_bg: #FFF; /* can be used for rad label span / --rad_label_span */
     --feature_border: var(--theme_ashmercury); /* can be used for rad label input disabled / --rad_label_i-dis */
-    
+
+    /* ### SRC/OPTIONS ### */
     /* radio.css */
     --rad_label_i-chk: var(--theme_ashblu); /* can be used for rad label span box shadow / --rad_label_span_bs */
     --rad_label_i-dis: var(--feature_border);
     --rad_label_span: var(--feature_bg);
     --rad_label_span_bs: var(--rad_label_i-chk);
-     
+
     /* toggle.css */
     /* Created Theme Variables */
-    /* theme: _ashblue / _ashmercury */    
- }
+    /* theme: _ashblue / _ashmercury */
+    
+    /**********/
+    /* ### SRC/SHARED ### */
+    /* Created Theme Variables */
+    /* theme: _ashash / _ashblu_darker / _ashblu_dark */
+}
 
 .input-slider {
     display: none !important;
