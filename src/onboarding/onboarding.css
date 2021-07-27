@@ -1,5 +1,12 @@
+:root{
+    /* onboarding.css */
+    --body_bg: #FAFAFA;
+    --feature_bg: #FFF;
+    --feature_border: #E5E5E5;
+}
+
 body {
-    background-color: #FAFAFA;
+    background-color: var(--body_bg);
 }
 
 img .inline {
@@ -27,13 +34,13 @@ h4 {
 }
 
 .feature {
-    background-color: #FFFFFF;
+    background-color: var(--feature_bg);
     display: flex;
     flex-flow: row;
     justify-content: space-around;
     padding: 1rem;
     margin: 1.5rem 0;
-    border: #E5E5E5 2px solid;
+    border: var(--feature_border) 2px solid;
     border-radius: 6px;
 }
 
