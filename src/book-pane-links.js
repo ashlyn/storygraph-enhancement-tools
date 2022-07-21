@@ -6,6 +6,7 @@
 
     const BOOK_PANE_SELECTOR = '.book-pane[data-book-id]';
 
+    const ACTION_LINK_SELECTOR = 'book-action-links';
     const LIBBY_LINK_SELECTOR = 'libby-link';
     const LIBBY_LINK_CLASSES = `${LIBBY_LINK_SELECTOR} text-xs cursor-pointer hover:text-cyan-700 border-b`;
     const LIBBY_LINK_TEXT = 'Library';
@@ -50,45 +51,50 @@
     };
 
     const appendLibraryLink = (bookPane, { libraryPlatform, libraryName }, bookData) => {
-        if (bookPane.getElementsByClassName(LIBBY_LINK_SELECTOR).length) return;
-
-        const actionLinks = bookPane.getElementsByClassName('book-action-links')[0];
         const linkBuilder = libraryLinkBuilder[libraryPlatform];
         const libbyLink = buildLinkElement({
             url: linkBuilder({ libraryName: libraryName, ...bookData }),
             text: LIBBY_LINK_TEXT,
             classNames: LIBBY_LINK_CLASSES,
         });
-        actionLinks.append(libbyLink);
+
+        [...bookPane.getElementsByClassName(ACTION_LINK_SELECTOR)].forEach(links => {
+            if (links.getElementsByClassName(LIBBY_LINK_SELECTOR).length) return;
+            links.append(libbyLink)
+        });
     };
 
-    const isUsAmazonDomain = (amazonDomain) => amazonDomain === DEFAULT_AMAZON_DOMAIN || amazonDomain === '.us';
+    const appendBuyLink = (bookPane, linkToAppend) => {
+        const buyPanes = bookPane.getElementsByClassName(BUY_LINK_SELECTOR);
+        const lastBuyLinks = [...buyPanes].map(bp => {
+            const paragraphs = bp.getElementsByTagName('p');
+            return ({
+                before: paragraphs[0],
+                parent: paragraphs[0].parentElement,
+            });
+        });
+        lastBuyLinks.forEach(links => {
+            if (links.parent.getElementsByClassName(linkToAppend.className).length) return;
+            const wrapper = document.createElement('p');
+            wrapper.appendChild(linkToAppend.cloneNode(true));
+            links.parent.insertBefore(wrapper, links.before);
+        });
+    };
 
-    const appendAmazonLink = (bookPane, selectedAmazonDomain, bookData) => {
-        if (bookPane.getElementsByClassName(AMAZON_LINK_SELECTOR).length) return;
-
-        const buyLinks = bookPane.getElementsByClassName(BUY_LINK_SELECTOR)[0].getElementsByTagName('p')[isUsAmazonDomain(selectedAmazonDomain) ? 0 : 1];
-
-        const amazonLinkElement = buildLinkElement({
+    const buildAmazonLink = (selectedAmazonDomain, bookData) => {
+        return buildLinkElement({
             url: buildAmazonLinkUrl({ amazonDomain: selectedAmazonDomain, ...bookData }),
             text: amazonLinkText(selectedAmazonDomain),
             classNames: AMAZON_LINK_CLASSES,
         });
-        buyLinks.append(document.createElement('br'), amazonLinkElement);
-    };
+    }
 
-    const appendEbooksLinks = (bookPane, bookData) => {
-        if (bookPane.getElementsByClassName(EBOOKS_LINK_SELECTOR).length) return;
-        
-        const buyLinks = [...bookPane.getElementsByClassName(BUY_LINK_SELECTOR)[0].getElementsByTagName('p')].slice(0, 2);
-        
-        // append links to both `United States` and `Other countries` category and let eBooks.com handle locale
-        const ebooksLinkElement = buildLinkElement({
+    const buildEbooksLink = (bookData) => {
+        return buildLinkElement({
             url: buildEbooksLinkUrl(bookData),
             text: EBOOKS_LINK_TEXT,
             classNames: EBOOKS_LINK_CLASSES,
         });
-        buyLinks.forEach(link => link.append(document.createElement('br'), ebooksLinkElement.cloneNode(true)));
     };
 
     const buildAllLinks = (bookPanes, {
@@ -108,8 +114,8 @@
         [...bookPanes].forEach(bookPane => {
             const bookData = getBookData(bookPane);
             if (libraryLinksEnabled) appendLibraryLink(bookPane, librarySettings, bookData);
-            if (amazonSearchLinksEnabled) appendAmazonLink(bookPane, selectedAmazonDomain, bookData);
-            if (ebooksSearchLinksEnabled) appendEbooksLinks(bookPane, bookData);
+            if (amazonSearchLinksEnabled) appendBuyLink(bookPane, buildAmazonLink(selectedAmazonDomain, bookData));
+            if (ebooksSearchLinksEnabled) appendBuyLink(bookPane, buildEbooksLink(bookData));
         });
     };
 
