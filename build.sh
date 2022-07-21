@@ -1,2 +1,2 @@
 #!/bin/sh
-zip -r dist src/ manifest.json
+zip -r dist src/ manifest.json service-worker.js
