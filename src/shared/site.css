@@ -1,15 +1,48 @@
+:root{
+    /* ### Theme Colors ### */
+    /* Note: #14919b ! since this is used frequently, you could call this a theme color var */
+    --theme_ashblu: #14919b; /* used in var --rad_label_i-chk */
+    /* Note: #E5E5E5 ! is used frequently too */ 
+    --theme_ashmercury: #E5E5E5; /* used in --feature_border */
+    --theme_ashash: #333333;
+    --theme_ashblu_darker: #0e7c86; /* DARKER THEME COLOR */
+    --theme_ashblu_dark: #30919c; /* DARKER THAN THEME COLOR, LIGHTER THAN DARKER THEME COLOR */
+
+    /* ### SRC/ONBOARDING ### */
+    /* onboarding.css */
+    --body_bg: #FAFAFA;
+    --feature_bg: #FFF; /* can be used for rad label span / --rad_label_span */
+    --feature_border: var(--theme_ashmercury); /* can be used for rad label input disabled / --rad_label_i-dis */
+
+    /* ### SRC/OPTIONS ### */
+    /* radio.css */
+    --rad_label_i-chk: var(--theme_ashblu); /* can be used for rad label span box shadow / --rad_label_span_bs */
+    --rad_label_i-dis: var(--feature_border);
+    --rad_label_span: var(--feature_bg);
+    --rad_label_span_bs: var(--rad_label_i-chk);
+
+    /* toggle.css */
+    /* Created Theme Variables */
+    /* theme: _ashblue / _ashmercury */
+    
+    /* ### SRC/SHARED ### */
+    /* site.css */
+    /* Created Theme Variables */
+    /* theme: _ashash / _ashblu_darker / _ashblu_dark */
+}
+
 .container {
     margin: 1.25rem;
     font-family: "Open Sans", sans-serif;
     font-size: 14px;
-    color: rgb(51, 51, 51);
+    color: var(--theme_ashash);
     line-height: 20px;
 }
 
 h5 {
     font-size: 16px;
     font-weight: 700;
-    color: rgb(14, 124, 134);
+    color: var(--theme_ashblu_darker);
     margin-bottom: 1rem;
 }
 
@@ -20,12 +53,12 @@ h4 {
 }
 
 label a {
-    color: rgb(51, 51, 51);
+    color: var(--theme_ashash);
     text-decoration: none;
 }
 
 label a:hover {
-    color: rgb(14, 124, 134);
+    color: var(--theme_ashblue_darker);
 }
 
 .info {
@@ -60,10 +93,10 @@ label a:hover {
     width: 100%;
     font-family: "Open Sans", sans-serif;
     font-size: 14px;
-    border: 2px solid rgb(229, 229, 229);
+    border: 2px solid var(--theme_ashmercury);
     border-radius: 6px;
     padding: 8px 12px;
-    color: rgb(51, 51, 51);
+    color: rgb(51, 51, 51); #333
     margin: 1px;
     box-sizing: border-box;
 }
@@ -71,7 +104,7 @@ label a:hover {
 .btn-primary {
     display: block;
     margin: 1rem auto 0 auto;
-    background-color: rgb(20, 145, 155);
+    background-color: var(--theme_ashblu);
     color: rgb(255, 255, 255);
     padding: 8px 24px;
     border: 1px solid transparent;
@@ -79,7 +112,7 @@ label a:hover {
 }
 
 .input-standard:focus {
-    border: 3px solid rgb(48, 145, 156);
+    border: 3px solid var(--theme_ashblu_dark);
     border-radius: 6px;
     margin: 0px;
 }
