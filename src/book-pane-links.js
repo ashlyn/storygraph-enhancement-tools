@@ -4,17 +4,19 @@
     const OVERDRIVE_PLATFORM = 'overdrive';
     const DEFAULT_LIBRARY_PLATFORM = OVERDRIVE_PLATFORM;
 
-    const BOOK_PANE_SELECTOR = '.book-pane[data-book-id]';
+    const BOOK_INFO_CLASSNAME = 'book-title-author-and-series';
 
-    const ACTION_LINK_SELECTOR = 'book-action-links';
-    const LIBBY_LINK_SELECTOR = 'libby-link';
-    const LIBBY_LINK_CLASSES = `${LIBBY_LINK_SELECTOR} text-xs cursor-pointer hover:text-cyan-700 border-b`;
-    const LIBBY_LINK_TEXT = 'Library';
+    const ACTION_MENU_SELECTOR = 'action-menu';
+    const LIBRARY_LINK_SELECTOR = 'library-link';
+    const LIBRARY_LINK_TEXT = 'search library';
+
+    const OWNED_LINK_CLASSNAME = 'remove-from-owned-link';
+    const MARK_AS_OWNED_LINK_CLASSNAME = 'mark-as-owned-link';
 
     const BUY_LINK_CLASSES = 'font-semibold hover:text-cyan-700';
     const DEFAULT_AMAZON_DOMAIN = '.com';
     const AMAZON_LINK_SELECTOR = 'amazon-link';
-    const BUY_LINK_SELECTOR = 'buy-book-pane';
+    const BUY_LINK_SELECTOR = 'affiliate-links';
     const AMAZON_LINK_CLASSES = `${AMAZON_LINK_SELECTOR} ${BUY_LINK_CLASSES}`;
     const amazonLinkText = (amazonDomain) => `Amazon${amazonDomain}`;
 
@@ -37,11 +39,12 @@
     };
 
     const getBookData = (bookPane) => {
-        const title = bookPane.getElementsByTagName('h3')[0].innerText;
-        const author = bookPane.getElementsByClassName('mb-1 text-xs')[0].innerText;
+        const info = bookPane.getElementsByClassName(BOOK_INFO_CLASSNAME)[0].innerText.split('\n').map(data => data.trim()).filter(data => data);
+        const title = info[0];
+        const author = info.length == 3 ? info[2] : info[1];
         return {
-            title: title,
-            author: author,
+            title: title.trim(),
+            author: author.trim(),
         };
     }
 
@@ -52,15 +55,33 @@
 
     const appendLibraryLink = (bookPane, { libraryPlatform, libraryName }, bookData) => {
         const linkBuilder = libraryLinkBuilder[libraryPlatform];
-        const libbyLink = buildLinkElement({
-            url: linkBuilder({ libraryName: libraryName, ...bookData }),
-            text: LIBBY_LINK_TEXT,
-            classNames: LIBBY_LINK_CLASSES,
-        });
 
-        [...bookPane.getElementsByClassName(ACTION_LINK_SELECTOR)].forEach(links => {
-            if (links.getElementsByClassName(LIBBY_LINK_SELECTOR).length) return;
-            links.append(libbyLink)
+        const originalContainer = bookPane.getElementsByClassName(MARK_AS_OWNED_LINK_CLASSNAME)
+            ? bookPane.getElementsByClassName(MARK_AS_OWNED_LINK_CLASSNAME)[0]?.parentElement?.parentElement
+            : bookPane.getElementsByClassName(OWNED_LINK_CLASSNAME)[0]?.parentElement?.parentElement;
+        
+        if (!originalContainer) return;
+
+        const container = originalContainer.cloneNode(true);
+        container.removeChild(container.children[1]);
+        container.children[0].classList.remove('col-span-2');
+        container.children[0].classList.add('col-span-3');
+        const link = container.getElementsByTagName('a')[0];
+        link.classList.remove(MARK_AS_OWNED_LINK_CLASSNAME);
+        link.classList.remove(OWNED_LINK_CLASSNAME);
+        link.classList.add(LIBRARY_LINK_SELECTOR);
+        link.setAttribute('aria-label', LIBRARY_LINK_TEXT);
+        link.title = LIBRARY_LINK_TEXT;
+        link.href = linkBuilder({ libraryName: libraryName, ...bookData });
+        link.removeAttribute('data-remote');
+        link.removeAttribute('rel');
+        link.removeAttribute('data-method');
+        link.setAttribute('target', '_blank');
+        link.getElementsByTagName('span')[0].innerText = LIBRARY_LINK_TEXT;
+
+        [...bookPane.getElementsByClassName(ACTION_MENU_SELECTOR)].forEach(links => {
+            if (links.getElementsByClassName(LIBRARY_LINK_SELECTOR).length) return;
+            links.getElementsByClassName('mark-as-owned-link')[0].parentElement.parentElement.insertAdjacentElement('beforebegin', container);
         });
     };
 
@@ -103,7 +124,7 @@
         ebooksSearchSettings: { ebooksSearchLinksEnabled },
     }) => {
         const { libraryLinksEnabled } = librarySettings;
-        if (!libraryLinksEnabled) removeLinks(LIBBY_LINK_SELECTOR);
+        if (!libraryLinksEnabled) removeLinks(LIBRARY_LINK_SELECTOR);
         if (!amazonSearchLinksEnabled) removeLinks(AMAZON_LINK_SELECTOR);
         if (!ebooksSearchLinksEnabled) removeLinks(EBOOKS_LINK_SELECTOR);
 
@@ -119,7 +140,7 @@
         });
     };
 
-    const getAllBookPanes = () => document.querySelectorAll(BOOK_PANE_SELECTOR);
+    const getAllBookPanes = () => [...document.getElementsByClassName(BOOK_INFO_CLASSNAME)].map(info => info.parentElement.parentElement);
 
     const removeLinks = (selector) => {
         const allLinks = document.getElementsByClassName(selector);
