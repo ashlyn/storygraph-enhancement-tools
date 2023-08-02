@@ -4,12 +4,15 @@ This repo contains the code and promotional materials for a Chrome browser exten
 
 * A `Library Search` link inserted into various views that when clicked, will take a user directly to search results for ebooks and audiobooks available at their local library through the Libby platform, and
 * Purchase links in the `Buy` section for amazon.com and ebooks.com.
+* Menu item in right-click context menus, which if clicked while text is selected, will open a new tab with search results in The StoryGraph for that text.
 
 All features are configurable by the user and can be toggled on-or-off individually.
 
 ![Screenshot of books in list view with added library and purchase links.](/screenshots/list-view.png)
 
 ![Screenshot of book in book view with added library and purchase links.](/screenshots/book-view.png)
+
+![Screenshot of the Search The StoryGraph feature in the right-click context menu.](/screenshots/search.png)
 
 ## Settings
 
