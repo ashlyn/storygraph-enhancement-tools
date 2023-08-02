@@ -20,13 +20,13 @@ jobs:
 
       - name: Get version from CHANGELOG.md
         id: changelog_reader
-        uses: mindsers/changelog-reader-action@v2
+        uses: mindsers/changelog-reader-action@v2.2.2
         with:
           path: ./docs/CHANGELOG.md
 
       - name: Get version from manifest.json
         id: manifest-version
-        uses: ashley-taylor/read-json-property-action@v1.0
+        uses: ashley-taylor/read-json-property-action@v1.1
         with:
           path: manifest.json
           property: version
