@@ -3,3 +3,7 @@
 .DS_Store
 dist.zip
 dist/**
+
+node_modules/**
+
+.env
