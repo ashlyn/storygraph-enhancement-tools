@@ -1,10 +1,11 @@
 {
   "name": "StoryGraph Enhancement Tools",
-    "description": "Adds some helpful UI elements, such as direct links to search your local library, to The StoryGraph.",
-    "version": "4.2.0",
-    "manifest_version": 3,
+  "description": "Adds some helpful UI elements, such as direct links to search your local library, to The StoryGraph.",
+  "version": "4.2.0",
+  "manifest_version": 3,
   "background": {
-    "service_worker": "serviceWorker.js"
+    "service_worker": "serviceWorker.js",
+    "scripts": ["serviceWorker.js"]
   },
   "content_scripts": [
     {
@@ -12,10 +13,16 @@
       "js": ["contentScript.js"]
     }
   ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "storygraphenhancementtoolsdev@gmail.com",
+      "strict_min_version": "58.0"
+    }
+  },
   "permissions": ["storage", "contextMenus"],
   "action": {
-    "default_title": "My basic Chrome extension",
-    "default_popup": "options.html",
+    "default_title": "Storygraph Enhancement Tools Settings",
+    "default_popup": "options/options.html",
     "default_icon": {
       "16": "/icons/logo16.png",
       "32": "/icons/logo32.png",

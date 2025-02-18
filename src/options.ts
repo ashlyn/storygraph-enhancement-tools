@@ -1,3 +1,4 @@
+import 'webextension-polyfill';
 import { AmazonDomains, DEFAULT_AMAZON_DOMAIN } from './constants/amazon';
 import {
   DEFAULT_LIBRARY_PLATFORM,

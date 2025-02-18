@@ -1,4 +1,5 @@
-// import 'webextension-polyfill';
+import * as browser from 'webextension-polyfill';
+import { LibraryPlatform } from './constants/library';
 
 // Define your storage data here
 export type LibrarySettings = {
@@ -22,57 +23,45 @@ export interface Storage {
   ebooksSearchSettings: EbooksSearchSettings;
 }
 
-export function getStorageData(): Promise<Storage> {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(null, (result) => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError);
-      }
-
-      return resolve(result as Storage);
-    });
-  });
+export async function getStorageData(): Promise<Storage> {
+  try {
+    return (await browser.storage.sync.get(null)) as Storage;
+  } catch (error) {
+    console.error('Failed to get storage data', error);
+    throw browser?.runtime?.lastError || error;
+  }
 }
 
-export function setStorageData(data: Storage): Promise<void> {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.set(data, () => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError);
-      }
-
-      return resolve();
-    });
-  });
+export async function setStorageData(data: Storage): Promise<void> {
+  try {
+    await browser.storage.sync.set(data);
+  } catch (error) {
+    console.error('Failed to set storage data', error);
+    throw browser?.runtime?.lastError || error;
+  }
 }
 
-export function getStorageItem<Key extends keyof Storage>(
+export async function getStorageItem<Key extends keyof Storage>(
   key: Key,
 ): Promise<Storage[Key]> {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get([key], (result) => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError);
-      }
-
-      return resolve((result as Storage)[key]);
-    });
-  });
+  try {
+    return ((await browser.storage.sync.get([key])) as Storage)[key];
+  } catch (error) {
+    console.error('Failed to get storage item', error);
+    throw browser?.runtime?.lastError || error;
+  }
 }
 
-export function setStorageItem<Key extends keyof Storage>(
+export async function setStorageItem<Key extends keyof Storage>(
   key: Key,
   value: Storage[Key],
 ): Promise<void> {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.set({ [key]: value }, () => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError);
-      }
-
-      return resolve();
-    });
-  });
+  try {
+    await browser.storage.sync.set({ [key]: value });
+  } catch (error) {
+    console.error('Failed to set storage item', error);
+    throw browser?.runtime?.lastError || error;
+  }
 }
 
 export async function initializeStorageWithDefaults(defaults: Storage) {

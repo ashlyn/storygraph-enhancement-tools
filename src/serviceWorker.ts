@@ -1,35 +1,36 @@
-// import 'webextension-polyfill';
+import * as browser from 'webextension-polyfill';
 import { initializeStorageWithDefaults } from './storage';
 import { DEFAULT_LIBRARY_NAME } from './constants/library';
 import { DEFAULT_AMAZON_DOMAIN } from './constants/amazon';
-
-const { OnInstalledReason } = chrome.runtime;
 
 const previousMajorVersions = [1];
 
 type UrlBuilder = (previousMajorVersion?: number) => string;
 const INSTALL_REASON_URLS: Record<
-  chrome.runtime.OnInstalledReason,
+  browser.runtime.OnInstalledReason,
   UrlBuilder
 > = {
-  [OnInstalledReason.INSTALL]: () => 'src/onboarding/onboarding.html',
-  [OnInstalledReason.UPDATE]: (previousMajorVersion: number) => {
+  [browser.runtime.OnInstalledReason.INSTALL]: () =>
+    'onboarding/onboarding.html',
+  [browser.runtime.OnInstalledReason.UPDATE]: (
+    previousMajorVersion: number,
+  ) => {
     if (previousMajorVersions.includes(previousMajorVersion)) {
-      return `src/onboarding/updates-from-v${previousMajorVersion}.html`;
+      return `onboarding/updates-from-v${previousMajorVersion}.html`;
     }
   },
-  [OnInstalledReason.CHROME_UPDATE]: () => '',
-  [OnInstalledReason.SHARED_MODULE_UPDATE]: () => '',
+  [browser.runtime.OnInstalledReason.CHROME_UPDATE]: () => '',
+  [browser.runtime.OnInstalledReason.SHARED_MODULE_UPDATE]: () => '',
 };
 
 const openNewTab = (url: string) => {
-  chrome.tabs.create({
+  browser.tabs.create({
     url: url,
   });
 };
 
 const searchContextMenuItemId = 'storygraph-search';
-const searchContextMenuCreateProperties: chrome.contextMenus.CreateProperties =
+const searchContextMenuCreateProperties: browser.contextMenus.CreateProperties =
   {
     contexts: ['selection'],
     enabled: true,
@@ -58,7 +59,7 @@ const storygraphSearchUrl = (searchTerm: string) =>
 const handleOnInstalledEvent = async ({
   reason,
   previousVersion = '',
-}: chrome.runtime.InstalledDetails) => {
+}: browser.runtime.InstalledDetails) => {
   await initializeOptions();
 
   const previousMajorVersion = parseInt(previousVersion.split('.')[0]);
@@ -68,12 +69,12 @@ const handleOnInstalledEvent = async ({
   const url = urlBuilder(previousMajorVersion);
   if (url) openNewTab(url);
 
-  chrome.contextMenus.create(searchContextMenuCreateProperties);
+  browser.contextMenus.create(searchContextMenuCreateProperties);
 };
 
-chrome.runtime.onInstalled.addListener(handleOnInstalledEvent);
+browser.runtime.onInstalled.addListener(handleOnInstalledEvent);
 
-chrome.contextMenus.onClicked.addListener((info) => {
+browser.contextMenus.onClicked.addListener((info) => {
   const { menuItemId, selectionText } = info;
   switch (menuItemId) {
     case searchContextMenuItemId:

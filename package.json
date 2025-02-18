@@ -1,13 +1,14 @@
 {
-  "name": "chrome-extension-webpack",
-  "version": "0.2.0",
-  "description": "Get started with Chrome extensions development using webpack, Typescript, Sass, and more",
+  "name": "storygraph-enhancement-tools",
+  "version": "4.3.0",
+  "description": "Adds some helpful UI elements, such as direct links to search your local library, to The StoryGraph.",
   "scripts": {
     "start": "webpack --watch --config webpack.dev.cjs",
     "build": "webpack --config webpack.prod.cjs",
     "lint": "eslint --ext .ts,.js --max-warnings=0 .",
-    "prettier": "prettier --write",
-    "test": "c8 mocha ./test/setup.js ./test/**/*.js"
+    "prettier": "prettier --write '{src,static}/**/*.{ts,js,css,scss,json,html}'",
+    "test": "c8 mocha ./test/setup.js ./test/**/*.js",
+    "watch": "webpack --watch --config webpack.dev.cjs"
   },
   "type": "module",
   "license": "MIT",

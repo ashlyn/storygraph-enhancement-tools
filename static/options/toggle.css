@@ -1,5 +1,5 @@
 .input-slider {
-    display: none !important;
+  display: none !important;
 }
 
 .input-slider,
@@ -9,56 +9,56 @@
 .input-slider *:after,
 .input-slider *:before,
 .input-slider + .slider {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .input-slider + .slider {
-    width: 2.8rem;
-    height: 1.2rem;
-    cursor: pointer;
-    user-select: none;
+  width: 2.8rem;
+  height: 1.2rem;
+  cursor: pointer;
+  user-select: none;
 }
 
 .input-slider + .slider:after,
 .input-slider + .slider:before {
-    position: relative;
-    display: block;
-    content: "";
-    width: 50%;
-    height: 100%;
+  position: relative;
+  display: block;
+  content: '';
+  width: 50%;
+  height: 100%;
 }
 
 .input-slider + .slider:after {
-    left: 0;
+  left: 0;
 }
 
 .input-slider + .slider:before {
-    display: none;
+  display: none;
 }
 
 .input-slider:checked + .slider:after {
-    left: 50%;
+  left: 50%;
 }
 
 .input-slider + .slider {
-    padding: 2px;
-    transition: all 0.2s ease;
-    background: transparent;
-    border: 2px solid rgb(229, 229, 229);
-    border-radius: 2rem;
+  padding: 2px;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: 2px solid rgb(229, 229, 229);
+  border-radius: 2rem;
 }
 
 .input-slider + .slider:after {
-    transition: all 0.2s ease;
-    background: rgb(229, 229, 229);
-    border-radius: 1rem;
+  transition: all 0.2s ease;
+  background: rgb(229, 229, 229);
+  border-radius: 1rem;
 }
 
 .input-slider:checked + .slider {
-    border: 2px solid rgb(20, 145, 155);
+  border: 2px solid rgb(20, 145, 155);
 }
 
 .input-slider:checked + .slider:after {
-    left: 50%;
-    background: rgb(20, 145, 155);
+  left: 50%;
+  background: rgb(20, 145, 155);
 }
