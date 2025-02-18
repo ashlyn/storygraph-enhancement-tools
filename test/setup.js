@@ -4,6 +4,10 @@ import sinonChrome from 'sinon-chrome';
 
 global.chrome = sinonChrome;
 
+if (!chrome.runtime) chrome.runtime = {};
+if (!chrome.runtime.id) chrome.runtime.id = "test-extension-id";
+
+
 let mockedStorage = {};
 
 // These are just the most important methods, feel free to add more if needed 
