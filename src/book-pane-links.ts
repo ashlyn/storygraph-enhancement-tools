@@ -62,19 +62,30 @@ type BookData = {
   author: string;
 };
 const getBookData = (bookPane: BookPane): BookData => {
-  const info = bookPane
-    .getElementsByClassName(BOOK_INFO_CLASSNAME)[0]
-    .textContent?.split('\n')
-    //.innerText.split('\n')
+  const pane = bookPane.getElementsByClassName(
+    BOOK_INFO_CLASSNAME,
+  )[0] as HTMLElement;
+  const info = pane.innerText
+    .split('\n')
     .map((data) => data.trim())
     .filter((data) => data);
   const title = info[0];
-  const author = info.length == 3 ? info[2] : info[1];
+  const author = sanitizeAuthor(getAuthorFromParts(info));
   return {
     title: title.trim(),
     author: author.trim(),
   };
 };
+
+const getAuthorFromParts = (parts: string[]): string => {
+  if (parts.length === 2) return parts[1];
+  const otherContributors = parts.findIndex((part) => part.startsWith('with'));
+  if (otherContributors > -1) return parts[otherContributors - 1];
+  return parts.length == 3 ? parts[2] : parts[1];
+};
+
+const sanitizeAuthor = (author: string): string =>
+  author.split(',')[0].split('with ')[0].trim();
 
 const libraryLinkBuilder = {
   ['libby']: buildLibbyLinkUrl,

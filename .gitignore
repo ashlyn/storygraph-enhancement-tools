@@ -6,6 +6,6 @@ dist/**
 
 node_modules/**
 
-coverage/** */
+coverage/**
 
 .env

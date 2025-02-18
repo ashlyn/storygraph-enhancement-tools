@@ -16,7 +16,7 @@ All features are configurable by the user and can be toggled on-or-off individua
 
 ## Settings
 
-After installing the extension locally or through the [Chrome extension web store](https://chrome.google.com/webstore/detail/storygraph-enhancement-to/fajbhmhackggapdpaameagbchbjfbnno), clicking the icon in the extensions menu will bring up the settings window. There are currently three user settings, which are used to correctly create the various links.
+After installing the extension locally or through the [Chrome extension web store](https://chrome.google.com/webstore/detail/storygraph-enhancement-to/fajbhmhackggapdpaameagbchbjfbnno) (now also supported on Firefox), clicking the icon in the extensions menu will bring up the settings window. There are currently three user settings, which are used to correctly create the various links.
 
 * Library Links (can be toggled on-or-off): To find out what your library name is, log into [Libby](https://libbyapp.com/), click the `Search` option, and see the library name in the URL bar (`libbyapp.com/search/<your library name>`).
 * Amazon Links (can be toggled on-or-off): Select the your country to be taken to the correct Amazon storefront; this setting defaults to amazon.com.
@@ -26,7 +26,7 @@ After installing the extension locally or through the [Chrome extension web stor
 
 ## Contribution
 
-To contribute to this browser extension, clone the repo, then follow the [tutorial for loading an unpacked extension](https://developer.chrome.com/docs/extensions/mv3/getstarted/#manifest) in your browser. Navigate to [The StoryGraph](https://app.thestorygraph.com/) to debug. Please file issues or feature requests as Github issues.
+To contribute to this browser extension, clone the repo, then follow the [tutorial for loading an unpacked extension](https://developer.chrome.com/docs/extensions/mv3/getstarted/#manifest) in your browser. When developing locally, make sure to run `npm run build` and load the manifest file from `dist/` rather than `static/`. Navigate to [The StoryGraph](https://app.thestorygraph.com/) to debug. Please file issues or feature requests as Github issues.
 
 ### Future Enhancements
 

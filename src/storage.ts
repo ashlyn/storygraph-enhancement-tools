@@ -25,7 +25,7 @@ export interface Storage {
 
 export async function getStorageData(): Promise<Storage> {
   try {
-    return (await browser.storage.sync.get(null)) as Storage;
+    return (await browser.storage.sync.get(null)) as unknown as Storage;
   } catch (error) {
     console.error('Failed to get storage data', error);
     throw browser?.runtime?.lastError || error;
@@ -34,7 +34,7 @@ export async function getStorageData(): Promise<Storage> {
 
 export async function setStorageData(data: Storage): Promise<void> {
   try {
-    await browser.storage.sync.set(data);
+    await browser.storage.sync.set(data as unknown as Record<string, unknown>);
   } catch (error) {
     console.error('Failed to set storage data', error);
     throw browser?.runtime?.lastError || error;
@@ -45,7 +45,7 @@ export async function getStorageItem<Key extends keyof Storage>(
   key: Key,
 ): Promise<Storage[Key]> {
   try {
-    return ((await browser.storage.sync.get([key])) as Storage)[key];
+    return ((await browser.storage.sync.get([key])) as unknown as Storage)[key];
   } catch (error) {
     console.error('Failed to get storage item', error);
     throw browser?.runtime?.lastError || error;
