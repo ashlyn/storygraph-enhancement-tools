@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../shared/reset.css" />
+    <link rel="stylesheet" href="../shared/site.css" />
+    <link rel="stylesheet" href="toggle.css" />
+    <link rel="stylesheet" href="radio.css" />
+    <link rel="stylesheet" href="options.css" />
+    <title>StoryGraph Enhancement Tools Settings</title>
+  </head>
+
+  <div class="container">
+    <h5>Configure StoryGraph Enhancement Tools</h5>
+
+    <section class="options">
+      <section class="column">
+        <fieldset class="option-group">
+          <div class="labeled-toggle">
+            <div class="toggle-group">
+              <input
+                class="input-slider"
+                id="enable-library-links"
+                type="checkbox"
+              />
+              <label class="slider" for="enable-library-links"></label>
+            </div>
+            <h4>Library Links</h4>
+          </div>
+
+          <p>Library Platform</p>
+          <div class="radioset" id="library-platform-options">
+            <label for="overdrive">
+              <input
+                type="radio"
+                id="overdrive"
+                name="library-platform"
+                value="overdrive"
+              />
+              <span>OverDrive</span>
+            </label>
+
+            <label for="libby">
+              <input
+                type="radio"
+                id="libby"
+                name="library-platform"
+                value="libby"
+              />
+              <span>Libby</span>
+            </label>
+          </div>
+
+          <label for="library-name" class="hideable hidden">
+            Library Name&nbsp;<a
+              href="https://libbyapp.com"
+              target="_blank"
+              title="Log into libbyapp.com, select the search icon, and find your library name in the URL"
+              >&#9432;</a
+            >
+          </label>
+          <input
+            type="text"
+            class="input-standard hideable hidden"
+            placeholder="e.g. Lincoln"
+            id="library-name"
+            name="library-name"
+          />
+        </fieldset>
+      </section>
+
+      <section class="column">
+        <fieldset class="option-group">
+          <div class="labeled-toggle">
+            <div class="toggle-group">
+              <input
+                class="input-slider"
+                id="enable-amazon-search"
+                type="checkbox"
+              />
+              <label class="slider" for="enable-amazon-search"></label>
+            </div>
+            <h4>Amazon Links</h4>
+          </div>
+
+          <label for="amazon-domain">Amazon Domain</label>
+          <select
+            class="input-standard"
+            name="amazon-domain"
+            id="amazon-domain"
+          ></select>
+        </fieldset>
+
+        <fieldset class="option-group">
+          <div class="labeled-toggle">
+            <div class="toggle-group">
+              <input
+                class="input-slider"
+                id="enable-ebooks-search"
+                type="checkbox"
+              />
+              <label class="slider" for="enable-ebooks-search"></label>
+            </div>
+            <h4>eBooks.com Links</h4>
+          </div>
+        </fieldset>
+      </section>
+    </section>
+
+    <input
+      id="save"
+      class="btn-primary"
+      type="submit"
+      name="save"
+      value="Save Options"
+    />
+    <div id="status" class="info"></div>
+  </div>
+
+  <script src="../options.js"></script>
+</html>

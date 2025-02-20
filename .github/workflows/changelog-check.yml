@@ -4,9 +4,12 @@ on:
     pull_request:
       paths:
         - 'docs/CHANGELOG.md'
-        - 'manifest.json'
-        - 'options/**'
-        - 'book-pane-links.js'
+        - 'static/manifest.json'
+        - 'static/onboarding/**'
+        - 'static/options/**'
+        - 'static/shared/**'
+        - 'src/**'
+        - 'styles/**'
 
 jobs:
   build:
@@ -28,12 +31,20 @@ jobs:
         id: manifest-version
         uses: ashley-taylor/read-json-property-action@v1.1
         with:
-          path: manifest.json
+          path: static/manifest.json
           property: version
+
+      - name: Get version from package.json
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+      - name: Validate package.json and manifest.json versions match
+        if: ${{ steps.package-version.outputs.current-version != steps.manifest-version.outputs.value }}
+        run: echo "::error package.json version ${{ steps.package-version.outputs.current-version }} does not match manifest.json version ${{ steps.manifest-version.outputs.value }}" && exit 1
 
       - name: Validate manifest.json and CHANGELOG versions match
         if: ${{ steps.changelog_reader.outputs.version != steps.manifest-version.outputs.value }}
-        run: echo "::error manifest.json version does not match CHANGELOG version" && exit 1
+        run: echo "::error manifest.json version ${{ steps.manifest-version.outputs.value }} does not match CHANGELOG version ${{ steps.changelog_reader.outputs.version }}" && exit 1
 
       - name: Validate the version has not yet been used
         env:
