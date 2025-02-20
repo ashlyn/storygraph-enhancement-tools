@@ -9,10 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adds support for Firefox on Android
 
-## [4.2.0] - 2025-02-18
+## [4.2.0] - 2025-04-18
 
 - Added cross-browser compatibility for Firefox
 - Fixed logic to parse author when building search links
+- Revamped CI to include additional assets
 
 ## [4.1.0] - 2023-08-01
 
