@@ -15,20 +15,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  Test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
-      - name: Set up node 
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
 
       - name: Install dependencies
         run: npm install
 
       - name: Run tests
         run: npm test
+
+      # Schema cannot be parsed fro this link, at least with Manifest v3
+      # - name: Validate manifest.json
+      #   uses: cardinalby/schema-validator-action@v3
+      #   with:
+      #     file: 'static/manifest.json'
+      #     schema: 'https://json.schemastore.org/webextension.json'
 
       # If you want to use coveralls to report the coverage produced by c8, uncomment this step
       # - name: Coveralls

@@ -6,12 +6,93 @@ on:
       - main
     paths:
       - 'docs/CHANGELOG.md'
-      - 'manifest.json'
-      - 'options/**'
-      - 'book-pane-links.js'
+      - 'static/**'
+      - 'src/**'
 
 jobs:
-  build:
+  build-assets:
+    name: Build assets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and pack extension
+        uses: ./.github/workflows/actions/build
+        id: build
+        with:
+          doNotPackZip: false
+      - name: Upload zipped artifacts
+        id: upload-zip-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-dist-zip
+          path: ${{ steps.build.outputs.zipFilePath }}
+
+  build-signed-crx:
+    needs: build-assets
+    name: Build signed CRX
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download zipped artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact-dist-zip
+          path: artifacts
+
+      - name: Build offline crx
+        id: build-crx
+        uses: cardinalby/webext-buildtools-chrome-crx-action@v2
+        with:
+          zipFilePath: artifacts/dist.zip
+          crxFilePath: artifacts/storygraph-enhancement-tools.crx
+          privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
+
+      - name: Upload CRX artifact
+        id: upload-crx-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-crx
+          path: artifacts/storygraph-enhancement-tools.crx
+
+  build-signed-xpi:
+    needs: build-assets
+    name: Build signed XPI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download zipped artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact-dist-zip
+          path: artifacts
+
+      - name: Sign Firefox xpi for offline distribution
+        id: firefox-sign-xpi
+        continue-on-error: true
+        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v1
+        with:
+          timeoutMs: 1200000
+          extensionId: ${{ secrets.FIREFOX_OFFLINE_EXTENSION_ID }}
+          zipFilePath: artifacts/dist.zip
+          xpiFilePath: artifacts/storygraph-enhancement-tools.xpi
+          jwtIssuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          jwtSecret: ${{ secrets.FIREFOX_JWT_SECRET }}
+
+      - name: Abort on sign error
+        if: |
+          steps.firefox-sign-xpi.outcome == 'failure' &&
+          steps.firefox-sign-xpi.outputs.sameVersionAlreadyUploadedError != 'true'          
+        run: exit 1
+
+      - name: Upload XPI artifact
+        id: upload-xpi-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-xpi
+          path: artifacts/storygraph-enhancement-tools.xip
+
+  create-release:
+    needs:
+      - build-assets
+      - build-signed-crx
+      - build-signed-xpi
     name: Create tag and release
     runs-on: ubuntu-latest
     steps:
@@ -34,8 +115,15 @@ jobs:
           custom_tag: ${{ steps.changelog_reader.outputs.version }}
           release_branches: main
 
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts
+          pattern: artifact-*
+          merge-multiple: true
+
       - name: Create a new release
-        uses:  softprops/action-gh-release@v1
+        uses:  softprops/action-gh-release@v2
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,4 +136,5 @@ jobs:
           draft: false
           files: |
             screenshots/**
+            artifacts/**
           
