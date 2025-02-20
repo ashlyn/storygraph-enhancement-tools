@@ -1,7 +1,7 @@
 {
   "name": "StoryGraph Enhancement Tools",
   "description": "Adds some helpful UI elements, such as direct links to search your local library, to The StoryGraph.",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "manifest_version": 3,
   "background": {
     "service_worker": "serviceWorker.js",
@@ -17,6 +17,9 @@
     "gecko": {
       "id": "storygraphenhancementtoolsdev@gmail.com",
       "strict_min_version": "109.0"
+    },
+    "gecko_android": {
+      "strict_min_version": "113.0"
     }
   },
   "permissions": ["storage", "contextMenus"],

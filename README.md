@@ -38,6 +38,12 @@ Follow the [tutorial for loading an unpacked extension](https://developer.chrome
 
 Follow the [tutorial for testing a Firefox extension locally](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension#installing) and select a file in the `dist` directory from the `about:debugging` page.
 
+Firefox for Android can be tested using the [Android USB (or wireless) debugging instructions](https://extensionworkshop.com/documentation/develop/developing-extensions-for-firefox-for-android/).
+
+### Web Ext
+
+Alternatively, the extension can be tested cross-browser (one at a time or simultaneously) using the `web-ext` utility and Webpack watch. Once all the dependencies are installed, run `npm run watch:chrome` for Chromium-only, `npm run watch:firefox` for Firefox Desktop only, or `npm run watch:web` for both browsers. To debug Firefox for Android, follow the [Android USB (or wireless) debugging instructions](https://extensionworkshop.com/documentation/develop/developing-extensions-for-firefox-for-android/) to connect a device and then run `npm run watch:mobile`.
+
 ### Future Enhancements
 
 * [Internationalization](https://developer.chrome.com/docs/extensions/reference/i18n/#how-to-support-multiple-languages) of settings UI and links in StoryGraph
