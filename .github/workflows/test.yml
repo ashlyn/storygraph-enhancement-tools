@@ -32,11 +32,12 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Validate manifest.json
-        uses: cardinalby/schema-validator-action@v3
-        with:
-          file: 'static/manifest.json'
-          schema: 'https://json.schemastore.org/webextension.json'
+      # Schema cannot be parsed fro this link, at least with Manifest v3
+      # - name: Validate manifest.json
+      #   uses: cardinalby/schema-validator-action@v3
+      #   with:
+      #     file: 'static/manifest.json'
+      #     schema: 'https://json.schemastore.org/webextension.json'
 
       # If you want to use coveralls to report the coverage produced by c8, uncomment this step
       # - name: Coveralls
