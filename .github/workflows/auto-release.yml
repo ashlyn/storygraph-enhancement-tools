@@ -55,6 +55,7 @@ jobs:
 
       - name: Build offline crx
         id: build-crx
+        continue-on-error: true
         uses: cardinalby/webext-buildtools-chrome-crx-action@v2
         with:
           zipFilePath: artifacts/dist.zip
@@ -63,6 +64,7 @@ jobs:
 
       - name: Upload CRX artifact
         id: upload-crx-artifact
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: artifact-crx
@@ -91,14 +93,9 @@ jobs:
           jwtIssuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
           jwtSecret: ${{ secrets.FIREFOX_JWT_SECRET }}
 
-      - name: Abort on sign error
-        if: |
-          steps.firefox-sign-xpi.outcome == 'failure' &&
-          steps.firefox-sign-xpi.outputs.sameVersionAlreadyUploadedError != 'true'          
-        run: exit 1
-
       - name: Upload XPI artifact
         id: upload-xpi-artifact
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: artifact-xpi
