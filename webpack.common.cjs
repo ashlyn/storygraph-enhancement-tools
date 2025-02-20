@@ -4,8 +4,9 @@ const DotenvPlugin = require('dotenv-webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const WebExtPlugin = require('web-ext-plugin').default;
 
-module.exports = {
+module.exports = (env) => ({
   entry: {
     serviceWorker: './src/serviceWorker.ts',
     contentScript: './src/book-pane-links.ts',
@@ -44,5 +45,11 @@ module.exports = {
     new CopyPlugin({
       patterns: [{ from: 'static' }],
     }),
+    new WebExtPlugin({
+      sourceDir: path.resolve(__dirname, 'dist'),
+      target: env?.target ?? ['chromium', 'firefox-desktop'],
+      adbDevice: env?.adbDevice,
+      firefoxApk: 'org.mozilla.fenix',
+    }),
   ],
-};
+});

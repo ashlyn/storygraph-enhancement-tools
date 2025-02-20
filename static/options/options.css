@@ -1,8 +1,22 @@
+.container {
+  @media (min-width: 801px) {
+    transform: scale(4,4);
+    transform-origin: 0 0;
+    width: fit-content;
+    max-width: 90vw;
+  }
+}
+
 .options {
   display: flex;
   flex-direction: row;
   flex-flow: space-between;
   justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.optionsTitle {
+  margin: 0.5rem;
 }
 
 .options > .column {
@@ -11,6 +25,12 @@
 
 .column {
   flex: 1 1 0;
+  min-width: 1vw;
+  min-width: 50%;
+
+  @media (min-width: 801px) {
+    width: 100%;
+  }
 }
 
 .hideable {
