@@ -14,20 +14,35 @@ jobs:
     name: Build assets
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Build and pack extension
-        uses: ./.github/workflows/actions/build
-        id: build
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          doNotPackZip: false
+          node-version-file: '.nvmrc'
+    
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        id: build
+        run: |
+          npm run build
+          echo "buildOutputPath=dist/" >> $GITHUB_OUTPUT
+
+      - name: Pack directory to zip
+        id: pack
+        uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
+        with:
+          extensionDir: 'dist/'
+          zipFilePath: 'artifacts/dist.zip'
+
       - name: Upload zipped artifacts
         id: upload-zip-artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact-dist-zip
-          path: ${{ steps.build.outputs.zipFilePath }}
+          path: artifacts/dist.zip
 
   build-signed-crx:
     needs: build-assets
@@ -140,4 +155,3 @@ jobs:
           files: |
             screenshots/**
             artifacts/**
-          
