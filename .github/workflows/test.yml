@@ -18,5 +18,26 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Test and validate manifest
-        uses: ./.github/workflows/actions/test
+      - name: Set up Git repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Validate manifest.json
+        uses: cardinalby/schema-validator-action@v3
+        with:
+          file: 'static/manifest.json'
+          schema: 'https://json.schemastore.org/webextension.json'
+
+      # If you want to use coveralls to report the coverage produced by c8, uncomment this step
+      # - name: Coveralls
+      #   uses: coverallsapp/github-action@v2

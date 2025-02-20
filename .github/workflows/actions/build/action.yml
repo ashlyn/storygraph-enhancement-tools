@@ -28,9 +28,6 @@ runs:
     - name: Install dependencies
       run: npm install
 
-    - name: Test
-      uses: ./.github/workflows/actions/test
-
     - name: Build
       id: build
       run: |
