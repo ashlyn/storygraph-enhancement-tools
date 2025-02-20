@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added cross-browser compatibility for Firefox
 - Fixed logic to parse author when building search links
+- Revamped CI to include additional assets
 
 ## [4.1.0] - 2023-08-01
 
