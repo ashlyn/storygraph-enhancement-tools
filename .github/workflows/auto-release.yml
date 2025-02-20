@@ -104,7 +104,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifact-xpi
-          path: artifacts/storygraph-enhancement-tools.xip
+          path: artifacts/storygraph-enhancement-tools.xpi
 
   create-release:
     needs:
