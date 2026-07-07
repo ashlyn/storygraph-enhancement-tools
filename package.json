@@ -10,7 +10,7 @@
     "test": "c8 mocha ./test/setup.js",
     "watch:chrome": "webpack --watch --config webpack.dev.cjs --env target='chromium'",
     "watch:firefox": "webpack --watch --config webpack.dev.cjs --env target='firefox'",
-    "watch:mobile": "env-cmd -x -- webpack --watch --config webpack.dev.cjs --env target='firefox-android' --env adbDevice=\\$ADB_DEVICE",
+    "watch:mobile": "env-cmd -x -- webpack --watch --config webpack.dev.cjs --env target='firefox-android' --env adbDevice=\\$ADB_DEVICE --env --firefox-apk org.mozilla.fenix",
     "watch:web": "webpack --watch --config webpack.dev.cjs"
   },
   "type": "module",
