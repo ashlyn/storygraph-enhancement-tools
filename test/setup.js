@@ -1,5 +1,6 @@
 // The chrome API won't be available in the test environment, so it has to be mocked
 // Of course, you can remove this setup file if you don't want to test interactions with the chrome API
+/* eslint-disable no-undef */ 
 import sinonChrome from 'sinon-chrome';
 
 global.chrome = sinonChrome;
