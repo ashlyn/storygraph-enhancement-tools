@@ -1,6 +1,6 @@
 .container {
   @media (min-width: 801px) {
-    transform: scale(4,4);
+    transform: scale(4, 4);
     transform-origin: 0 0;
     width: fit-content;
     max-width: 90vw;

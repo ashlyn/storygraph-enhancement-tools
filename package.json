@@ -1,6 +1,6 @@
 {
   "name": "storygraph-enhancement-tools",
-  "version": "4.2.1",
+  "version": "4.3.1",
   "description": "Adds some helpful UI elements, such as direct links to search your local library, to The StoryGraph.",
   "scripts": {
     "start": "webpack --watch --config webpack.dev.cjs",

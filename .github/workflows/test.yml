@@ -32,11 +32,12 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Validate manifest.json
-        uses: cardinalby/schema-validator-action@v3
-        with:
-          file: 'static/manifest.json'
-          schema: 'https://json.schemastore.org/chrome-manifest'
+      # Cannot parse multi-browser manifest with this format
+      # - name: Validate manifest.json
+      #   uses: cardinalby/schema-validator-action@v3
+      #   with:
+      #     file: 'static/manifest.json'
+      #     schema: 'https://json.schemastore.org/chrome-manifest'
 
       # If you want to use coveralls to report the coverage produced by c8, uncomment this step
       # - name: Coveralls

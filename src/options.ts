@@ -1,20 +1,22 @@
 import 'webextension-polyfill';
-import { AmazonDomains, DEFAULT_AMAZON_DOMAIN } from './constants/amazon';
+import { AmazonDomains, DEFAULT_AMAZON_DOMAIN } from './constants/amazon.ts';
 import {
   DEFAULT_LIBRARY_PLATFORM,
   LIBBY_PLATFORM,
+  LibraryPlatform,
   OVERDRIVE_PLATFORM,
-} from './constants/library';
+} from './constants/library.ts';
 import {
   AMAZON_DOMAIN_SELECTOR,
   AMAZON_LINKS_ENABLED_SELECTOR,
   EBOOKS_LINKS_ENABLED_SELECTOR,
+  KOBO_LINKS_ENABLED_SELECTOR,
   LIBRARY_LINKS_ENABLED_SELECTOR,
   LIBRARY_NAME_INPUT_SELECTOR,
   LIBRARY_PLATFORM_INPUTS_SELECTOR,
   STATUS_TEXT_SELECTOR,
-} from './constants/selectors';
-import { getStorageData, setStorageData } from './storage';
+} from './constants/selectors.ts';
+import { getStorageData, setStorageData } from './storage.ts';
 
 const HIDDEN_CLASS = 'hidden';
 
@@ -84,13 +86,15 @@ const saveOptions = () => {
     EBOOKS_LINKS_ENABLED_SELECTOR,
   ).checked;
 
+  const koboSearchLinksEnabled = getInput(KOBO_LINKS_ENABLED_SELECTOR).checked;
+
   const status = getInput(STATUS_TEXT_SELECTOR);
   status.textContent = 'Saving...';
   let resultText = '';
   setStorageData({
     librarySettings: {
       libraryLinksEnabled: libraryLinksEnabled,
-      libraryPlatform: libraryPlatform,
+      libraryPlatform: libraryPlatform as LibraryPlatform,
       libraryName: libraryName,
     },
     amazonSearchSettings: {
@@ -99,6 +103,9 @@ const saveOptions = () => {
     },
     ebooksSearchSettings: {
       ebooksSearchLinksEnabled: ebooksSearchLinksEnabled,
+    },
+    koboSearchSettings: {
+      koboSearchLinksEnabled: koboSearchLinksEnabled,
     },
   })
     .then(() => {
@@ -119,6 +126,12 @@ const saveOptions = () => {
 
 const updateLibraryNameInputDisplay = (shouldDisplay: boolean) => {
   const libraryNameInput = document.getElementById(LIBRARY_NAME_INPUT_SELECTOR);
+  if (
+    !libraryNameInput?.previousElementSibling ||
+    !libraryNameInput?.classList
+  ) {
+    return;
+  }
   if (!shouldDisplay) {
     libraryNameInput.previousElementSibling.classList.add(HIDDEN_CLASS);
     libraryNameInput.classList.add(HIDDEN_CLASS);
@@ -141,6 +154,7 @@ const restoreOptions = async () => {
     librarySettings: { libraryLinksEnabled, libraryPlatform, libraryName },
     amazonSearchSettings: { amazonSearchLinksEnabled, selectedAmazonDomain },
     ebooksSearchSettings: { ebooksSearchLinksEnabled },
+    koboSearchSettings,
   } = await getStorageData();
 
   getInput(LIBRARY_LINKS_ENABLED_SELECTOR).checked = libraryLinksEnabled;
@@ -163,10 +177,13 @@ const restoreOptions = async () => {
   amazonSelect.disabled = !amazonSearchLinksEnabled;
 
   getInput(EBOOKS_LINKS_ENABLED_SELECTOR).checked = ebooksSearchLinksEnabled;
+
+  getInput(KOBO_LINKS_ENABLED_SELECTOR).checked =
+    koboSearchSettings?.koboSearchLinksEnabled || true;
 };
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
-document.getElementById('save').addEventListener('click', saveOptions);
+document.getElementById('save')?.addEventListener('click', saveOptions);
 
 document
   .getElementById(LIBRARY_LINKS_ENABLED_SELECTOR)

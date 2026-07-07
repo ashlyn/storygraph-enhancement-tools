@@ -8,5 +8,7 @@
 		"moduleResolution": "nodenext",
     "types": ["node", "mocha", "webextension-polyfill"],
     "sourceMap": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
   }
 }
