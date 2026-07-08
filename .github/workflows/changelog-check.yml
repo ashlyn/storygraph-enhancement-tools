@@ -12,7 +12,7 @@ on:
         - 'styles/**'
 
 jobs:
-  build:
+  changelog-check:
     name: Verify if CHANGELOG was updated
     runs-on: ubuntu-latest
     steps:
