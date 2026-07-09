@@ -171,6 +171,7 @@ jobs:
           prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
           draft: false
           files: |
+            screenshots/**
             artifacts/*.zip
             artifacts/*.crx
             artifacts/*.xpi
