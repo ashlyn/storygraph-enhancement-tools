@@ -45,7 +45,7 @@ jobs:
 
       - name: Pack directory to zip
         id: pack
-        uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1.0.8
+        uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
         with:
           extensionDir: 'dist/'
           zipFilePath: 'artifacts/dist.zip'
@@ -71,7 +71,7 @@ jobs:
       - name: Build offline crx
         id: build-crx
         continue-on-error: true
-        uses: cardinalby/webext-buildtools-chrome-crx-action@v2.0.3
+        uses: cardinalby/webext-buildtools-chrome-crx-action@v2
         with:
           zipFilePath: artifacts/dist.zip
           crxFilePath: artifacts/storygraph-enhancement-tools.crx
@@ -110,7 +110,7 @@ jobs:
       - name: Sign Firefox xpi for offline distribution
         id: firefox-sign-xpi
         continue-on-error: true
-        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v1.0.7
+        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v1
         with:
           timeoutMs: 1200000
           extensionId: ${{ secrets.FIREFOX_OFFLINE_EXTENSION_ID }}
@@ -122,7 +122,7 @@ jobs:
       - name: Submit Firefox add-on
         id: firefox-sign-listed-xpi
         continue-on-error: true
-        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v1.0.7
+        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v1
         with:
           timeoutMs: 1200000
           channel: listed
