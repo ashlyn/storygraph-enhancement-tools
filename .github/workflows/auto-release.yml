@@ -14,11 +14,25 @@ jobs:
   build-assets:
     name: Build assets
     runs-on: ubuntu-latest
+    # Map the step output to a job-level output so other jobs can read it
+    outputs:
+      release_arg: ${{ steps.detector.outputs.arg }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Fetch history so git diff can check the last commit
+
+      - name: Detect screenshot changes
+        id: detector
+        run: |
+          if git diff --name-only HEAD~1 HEAD | grep -q "^screenshots/"; then
+            echo "arg=upload" >> $GITHUB_OUTPUT
+          else
+            echo "arg=publish" >> $GITHUB_OUTPUT
+          fi
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
     
@@ -38,7 +52,7 @@ jobs:
 
       - name: Upload zipped artifacts
         id: upload-zip-artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: artifact-dist-zip
           path: artifacts/dist.zip
@@ -49,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download zipped artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: artifact-dist-zip
           path: artifacts
@@ -66,10 +80,21 @@ jobs:
       - name: Upload CRX artifact
         id: upload-crx-artifact
         continue-on-error: true
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: artifact-crx
           path: artifacts/storygraph-enhancement-tools.crx
+
+      - name: Upload CRX to Chrome Webstore
+        continue-on-error: true
+        # Now safely reads the output generated in the build-assets job
+        run: npx chrome-webstore-upload-cli@4 ${{ needs.build-assets.outputs.release_arg }} --source artifacts/storygraph-enhancement-tools.crx
+        env:
+          EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
+          CLIENT_ID: ${{ secrets.CHROME_DEV_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CHROME_DEV_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.CHROME_DEV_REFRESH_TOKEN }}
+          PUBLISHER_ID: ${{ secrets.CHROME_DEV_PUBLISHER_ID }}
 
   build-signed-xpi:
     needs: build-assets
@@ -77,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download zipped artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: artifact-dist-zip
           path: artifacts
@@ -94,13 +119,26 @@ jobs:
           jwtIssuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
           jwtSecret: ${{ secrets.FIREFOX_JWT_SECRET }}
 
+      - name: Submit Firefox add-on
+        id: firefox-sign-listed-xpi
+        continue-on-error: true
+        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v1.0.7
+        with:
+          timeoutMs: 1200000
+          channel: listed
+          extensionId: ${{ secrets.FIREFOX_OFFLINE_EXTENSION_ID }}
+          zipFilePath: artifacts/dist.zip
+          xpiFilePath: artifacts/storygraph-enhancement-tools-listed.xpi
+          jwtIssuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          jwtSecret: ${{ secrets.FIREFOX_JWT_SECRET }}
+
       - name: Upload XPI artifact
         id: upload-xpi-artifact
         continue-on-error: true
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: artifact-xpi
-          path: artifacts/storygraph-enhancement-tools.xpi
+          path: artifacts/*.xpi
 
   create-release:
     needs:
@@ -111,7 +149,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -130,18 +168,17 @@ jobs:
           release_branches: main
 
       - name: Download artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
           pattern: artifact-*
           merge-multiple: true
 
       - name: Create a new release
-        uses:  softprops/action-gh-release@v3.0.1
+        uses: softprops/action-gh-release@v2
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ashlyn/storygraph-enhancement-tools
         with:
           tag_name: v${{ steps.changelog_reader.outputs.version }}
           name: ${{ steps.changelog_reader.outputs.version }}
@@ -149,5 +186,6 @@ jobs:
           prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
           draft: false
           files: |
-            screenshots/**
-            artifacts/**
+            artifacts/*.zip
+            artifacts/*.crx
+            artifacts/*.xpi
