@@ -3,6 +3,8 @@
 .DS_Store
 dist.zip
 dist/**
+artifacts/**
+web-ext-artifacts/**
 
 node_modules/**
 
