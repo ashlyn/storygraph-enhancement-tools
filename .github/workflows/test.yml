@@ -11,7 +11,7 @@ on:
 
 # This concurrency mode will cancel in-progress workflows if a new commit is pushed   
 concurrency: 
-  group: ${{ github.head_ref || github.ref_name }} 
+  group: ${{ github.head_ref || github.ref_name }} test
   cancel-in-progress: true
 
 jobs:
