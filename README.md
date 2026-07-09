@@ -26,7 +26,7 @@ After installing the extension locally or through the [Chrome extension web stor
 
 ## Contribution
 
-To contribute to this extension, clone the repo and open it in a web IDE of choice. Make sure to use Node v23.8.0 and NPM v10.9.2 then run `npm install` to install all required dependencies. This extension was built in VS Code on MacOS Sonoma 14.7.4 although it should be compatible with most operating systems. From the root of the directory, run `npm run build` to build cross-browser compatible extension files.
+To contribute to this extension, clone the repo and open it in a web IDE of choice. Make sure to use Node v26.4.0 and NPM v11.17.0 then run `npm install` to install all required dependencies. This extension was built in VS Code on MacOS Sequoia 15.7.7 although it should be compatible with most operating systems. From the root of the directory, run `npm run build` to build cross-browser compatible extension files.
 
 When running the extension locally, select `dist/manifest.json` rather than `static/manifest.json` to ensure that the correct, cross-browser code is running. Open the extension settings from its icon in your browser, select some of the available features and save, then navigate to [The StoryGraph](https://app.thestorygraph.com/) to debug. Library and buy links should display on the TBR/read/tag list views, the Explore page, and individual book pages. Make sure when testing that any changes are at least compatible with Chrome/Chromium-based browsers and Firefox. Please file issues or feature requests as Github issues.
 

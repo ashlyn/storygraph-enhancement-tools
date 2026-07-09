@@ -12,24 +12,24 @@ on:
         - 'styles/**'
 
 jobs:
-  build:
+  changelog-check:
     name: Verify if CHANGELOG was updated
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Get version from CHANGELOG.md
         id: changelog_reader
-        uses: mindsers/changelog-reader-action@v2.2.2
+        uses: mindsers/changelog-reader-action@v2.4.0
         with:
           path: ./docs/CHANGELOG.md
 
       - name: Get version from manifest.json
         id: manifest-version
-        uses: ashley-taylor/read-json-property-action@v1.1
+        uses: ashley-taylor/read-json-property-action@v1.2
         with:
           path: static/manifest.json
           property: version

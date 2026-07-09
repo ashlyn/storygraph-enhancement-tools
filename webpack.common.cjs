@@ -37,7 +37,7 @@ module.exports = (env) => ({
     new DotenvPlugin(),
     new ESLintPlugin({
       extensions: ['js', 'ts'],
-      overrideConfigFile: path.resolve(__dirname, '.eslintrc'),
+      overrideConfigFile: path.resolve(__dirname, 'eslint.config.mjs'),
     }),
     new MiniCssExtractPlugin({
       filename: 'styles/[name].css',

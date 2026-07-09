@@ -2,9 +2,13 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "module": "es6",
+    "module": "nodenext",
     "target": "es6",
     "allowJs": true,
-    "moduleResolution": "node"
+		"moduleResolution": "nodenext",
+    "types": ["node", "mocha", "webextension-polyfill"],
+    "sourceMap": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
   }
 }

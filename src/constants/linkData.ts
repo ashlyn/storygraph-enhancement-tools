@@ -1,4 +1,8 @@
-import { AMAZON_LINK_SELECTOR, EBOOKS_LINK_SELECTOR } from './selectors';
+import {
+  AMAZON_LINK_SELECTOR,
+  EBOOKS_LINK_SELECTOR,
+  KOBO_LINK_SELECTOR,
+} from './selectors.ts';
 
 export const BOOK_INFO_CLASSNAME = 'book-title-author-and-series';
 
@@ -11,3 +15,6 @@ export const amazonLinkText = (amazonDomain: string) => `Amazon${amazonDomain}`;
 
 export const EBOOKS_LINK_CLASSES = `${EBOOKS_LINK_SELECTOR} ${BUY_LINK_CLASSES}`;
 export const EBOOKS_LINK_TEXT = 'eBooks.com';
+
+export const KOBO_LINK_CLASSES = `${KOBO_LINK_SELECTOR} ${BUY_LINK_CLASSES}`;
+export const KOBO_LINK_TEXT = 'Kobo';

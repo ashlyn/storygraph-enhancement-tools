@@ -7,6 +7,8 @@ export const LIBRARY_PLATFORM_INPUTS_SELECTOR = 'input[name=library-platform]';
 
 export const EBOOKS_LINKS_ENABLED_SELECTOR = 'enable-ebooks-search';
 
+export const KOBO_LINKS_ENABLED_SELECTOR = 'enable-kobo-search';
+
 export const ACTION_MENU_SELECTOR = 'action-menu';
 export const LIBRARY_LINK_SELECTOR = 'library-link';
 export const LIBRARY_LINK_TEXT = 'search library';
@@ -14,3 +16,4 @@ export const LIBRARY_LINK_TEXT = 'search library';
 export const AMAZON_LINK_SELECTOR = 'amazon-link';
 export const BUY_LINK_SELECTOR = 'affiliate-links';
 export const EBOOKS_LINK_SELECTOR = 'ebooks-link';
+export const KOBO_LINK_SELECTOR = 'kobo-link';

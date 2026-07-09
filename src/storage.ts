@@ -1,5 +1,5 @@
 import * as browser from 'webextension-polyfill';
-import { LibraryPlatform } from './constants/library';
+import { LibraryPlatform } from './constants/library.ts';
 
 // Define your storage data here
 export type LibrarySettings = {
@@ -17,10 +17,15 @@ type EbooksSearchSettings = {
   ebooksSearchLinksEnabled: boolean;
 };
 
+type KoboSearchSettings = {
+  koboSearchLinksEnabled: boolean;
+};
+
 export interface Storage {
   librarySettings: LibrarySettings;
   amazonSearchSettings: AmazonSearchSettings;
   ebooksSearchSettings: EbooksSearchSettings;
+  koboSearchSettings?: KoboSearchSettings;
 }
 
 export async function getStorageData(): Promise<Storage> {
