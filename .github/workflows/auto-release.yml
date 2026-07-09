@@ -14,21 +14,20 @@ jobs:
   build-assets:
     name: Build assets
     runs-on: ubuntu-latest
-    # Map the step output to a job-level output so other jobs can read it
     outputs:
-      release_arg: ${{ steps.detector.outputs.arg }}
+      should_publish: ${{ steps.detector.outputs.shouldPublish }}
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2 # Fetch history so git diff can check the last commit
+          fetch-depth: 2
 
       - name: Detect screenshot changes
         id: detector
         run: |
           if git diff --name-only HEAD~1 HEAD | grep -q "^screenshots/"; then
-            echo "arg=upload" >> $GITHUB_OUTPUT
+            echo "shouldPublish=false" >> $GITHUB_OUTPUT
           else
-            echo "arg=publish" >> $GITHUB_OUTPUT
+            echo "shouldPublish=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Setup Node.js
@@ -42,6 +41,9 @@ jobs:
       - name: Build
         id: build
         run: npm run build
+
+      - name: Zip raw source code
+        run: zip -r source.zip . -x "node_modules/*" ".git/*" "dist/*" "artifacts/*" ".github/*" ".coverage/*" ".husky/*" ".vscode/*"
 
       - name: Pack directory to zip
         id: pack
@@ -57,6 +59,13 @@ jobs:
           name: artifact-dist-zip
           path: artifacts/dist.zip
 
+      - name: Upload raw source
+        id: upload-raw-source
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-zip
+          path: source.zip
+
   build-signed-crx:
     needs: build-assets
     name: Build signed CRX
@@ -70,7 +79,6 @@ jobs:
 
       - name: Build offline crx
         id: build-crx
-        continue-on-error: true
         uses: cardinalby/webext-buildtools-chrome-crx-action@v2
         with:
           zipFilePath: artifacts/dist.zip
@@ -79,7 +87,6 @@ jobs:
 
       - name: Upload CRX artifact
         id: upload-crx-artifact
-        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: artifact-crx
@@ -87,8 +94,12 @@ jobs:
 
       - name: Upload CRX to Chrome Webstore
         continue-on-error: true
-        # Now safely reads the output generated in the build-assets job
-        run: npx chrome-webstore-upload-cli@4 ${{ needs.build-assets.outputs.release_arg }} --source artifacts/storygraph-enhancement-tools.crx
+        run: |
+          if ${{ needs.build-assets.outputs.should_publish }}; then
+            npx chrome-webstore-upload-cli@4 --source artifacts/storygraph-enhancement-tools.crx
+          else
+            npx chrome-webstore-upload-cli@4 upload --source artifacts/storygraph-enhancement-tools.crx
+          fi
         env:
           EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
           CLIENT_ID: ${{ secrets.CHROME_DEV_CLIENT_ID }}
@@ -105,36 +116,26 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact-dist-zip
-          path: artifacts
+          path: ./
 
-      - name: Sign Firefox xpi for offline distribution
-        id: firefox-sign-xpi
-        continue-on-error: true
-        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v1
+      - name: Download source artifact
+        uses: actions/download-artifact@v4
         with:
-          timeoutMs: 1200000
-          extensionId: ${{ secrets.FIREFOX_OFFLINE_EXTENSION_ID }}
-          zipFilePath: artifacts/dist.zip
-          xpiFilePath: artifacts/storygraph-enhancement-tools.xpi
-          jwtIssuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
-          jwtSecret: ${{ secrets.FIREFOX_JWT_SECRET }}
+          name: source-zip
+          path: ./
 
-      - name: Submit Firefox add-on
-        id: firefox-sign-listed-xpi
-        continue-on-error: true
-        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v1
-        with:
-          timeoutMs: 1200000
-          channel: listed
-          extensionId: ${{ secrets.FIREFOX_OFFLINE_EXTENSION_ID }}
-          zipFilePath: artifacts/dist.zip
-          xpiFilePath: artifacts/storygraph-enhancement-tools-listed.xpi
-          jwtIssuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
-          jwtSecret: ${{ secrets.FIREFOX_JWT_SECRET }}
+      - name: Unzip source and dist
+        run: unzip dist.zip -d unzipped-dist
+
+      - name: Sign Firefox XPI for distribution
+        run: |
+          npx web-ext@10 sign --channel listed --source-dir unzipped-dist --upload-source-code source.zip --timeout 1200000 --artifacts-dir artifacts/
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
 
       - name: Upload XPI artifact
         id: upload-xpi-artifact
-        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: artifact-xpi
