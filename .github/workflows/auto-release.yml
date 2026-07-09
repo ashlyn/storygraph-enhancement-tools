@@ -14,21 +14,10 @@ jobs:
   build-assets:
     name: Build assets
     runs-on: ubuntu-latest
-    outputs:
-      should_publish: ${{ steps.detector.outputs.shouldPublish }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
-
-      - name: Detect screenshot changes
-        id: detector
-        run: |
-          if git diff --name-only HEAD~1 HEAD | grep -q "^screenshots/"; then
-            echo "shouldPublish=false" >> $GITHUB_OUTPUT
-          else
-            echo "shouldPublish=true" >> $GITHUB_OUTPUT
-          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -93,13 +82,7 @@ jobs:
           path: artifacts/storygraph-enhancement-tools.crx
 
       - name: Upload CRX to Chrome Webstore
-        continue-on-error: true
-        run: |
-          if ${{ needs.build-assets.outputs.should_publish }}; then
-            npx chrome-webstore-upload-cli@4 --source artifacts/storygraph-enhancement-tools.crx
-          else
-            npx chrome-webstore-upload-cli@4 upload --source artifacts/storygraph-enhancement-tools.crx
-          fi
+        run: npx chrome-webstore-upload-cli@4 --source artifacts/dist.zip
         env:
           EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
           CLIENT_ID: ${{ secrets.CHROME_DEV_CLIENT_ID }}
@@ -146,6 +129,7 @@ jobs:
       - build-assets
       - build-signed-crx
       - build-signed-xpi
+    if: success() || failure()
     name: Create tag and release
     runs-on: ubuntu-latest
     steps:
