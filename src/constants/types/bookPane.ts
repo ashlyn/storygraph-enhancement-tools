@@ -1,0 +1,1 @@
+export type BookPane = HTMLElement;
