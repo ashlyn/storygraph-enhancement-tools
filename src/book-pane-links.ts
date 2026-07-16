@@ -20,32 +20,14 @@ import {
   amazonLinkText,
 } from './constants/linkData.ts';
 
-const buildLibbyLinkUrl = ({
-  libraryName,
-  title,
-  author,
-}: { libraryName: string } & BookData) =>
-  encodeURI(
-    `https://libbyapp.com/search/${libraryName}/search/query-${title} ${author}/page-1`,
-  );
-
-const buildOverdriveLinkUrl = ({ title, author }: BookData) =>
-  encodeURI(`https://overdrive.com/search?q=${title}+${author}`);
-
-const buildAmazonLinkUrl = ({
-  amazonDomain,
-  title,
-  author,
-}: { amazonDomain: string } & BookData) =>
-  encodeURI(`https://amazon${amazonDomain}/s?k=${title}+${author}`);
-
-const buildEbooksLinkUrl = ({ title, author }: BookData) =>
-  encodeURI(
-    `https://www.ebooks.com/searchapp/searchresults.net?term=${title}+${author}`,
-  );
-
-const buildKoboLinkUrl = ({ title, author }: BookData) =>
-  encodeURI(`https://www.kobo.com/search?query=${title}+${author}`);
+import { BookData } from './constants/types/bookData.ts';
+import {
+  buildAmazonLinkUrl,
+  buildEbooksLinkUrl,
+  buildKoboLinkUrl,
+  buildLibbyLinkUrl,
+  buildOverdriveLinkUrl,
+} from './utils/urlBuilders.ts';
 
 const buildLinkElement = ({
   url,
@@ -66,10 +48,6 @@ const buildLinkElement = ({
 
 type BookPane = HTMLElement;
 
-type BookData = {
-  title: string;
-  author: string;
-};
 const getBookData = (bookPane: BookPane): BookData => {
   const pane = bookPane.getElementsByClassName(
     BOOK_INFO_CLASSNAME,
